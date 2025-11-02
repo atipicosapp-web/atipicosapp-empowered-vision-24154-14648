@@ -1,0 +1,166 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { ShoppingCart, Minus, Plus, Trash2, ExternalLink, Loader2 } from "lucide-react";
+import { useCartStore } from "@/stores/cartStore";
+
+export const CartDrawer = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { 
+    items, 
+    isLoading, 
+    updateQuantity, 
+    removeItem, 
+    createCheckout 
+  } = useCartStore();
+  
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = items.reduce((sum, item) => sum + (parseFloat(item.price.amount) * item.quantity), 0);
+
+  const handleCheckout = async () => {
+    try {
+      await createCheckout();
+      const checkoutUrl = useCartStore.getState().checkoutUrl;
+      if (checkoutUrl) {
+        window.open(checkoutUrl, '_blank');
+        setIsOpen(false);
+      }
+    } catch (error) {
+      console.error('Falha no checkout:', error);
+    }
+  };
+
+  return (
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
+        <Button className="relative bg-purple-600/70 hover:bg-purple-600 text-white p-2 sm:p-3 rounded-lg border border-purple-400/50">
+          <ShoppingCart className="h-5 w-5" />
+          {totalItems > 0 && (
+            <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-pink-500">
+              {totalItems}
+            </Badge>
+          )}
+        </Button>
+      </SheetTrigger>
+      
+      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full bg-gradient-to-br from-blue-200 via-purple-200 to-indigo-200">
+        <SheetHeader className="flex-shrink-0">
+          <SheetTitle className="text-blue-800">Carrinho de Compras 🛒</SheetTitle>
+          <SheetDescription className="text-purple-700">
+            {totalItems === 0 ? "Seu carrinho está vazio" : `${totalItems} ${totalItems !== 1 ? 'itens' : 'item'} no carrinho`}
+          </SheetDescription>
+        </SheetHeader>
+        
+        <div className="flex flex-col flex-1 pt-6 min-h-0">
+          {items.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <ShoppingCart className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                <p className="text-gray-600">Seu carrinho está vazio</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Scrollable items area */}
+              <div className="flex-1 overflow-y-auto pr-2 min-h-0">
+                <div className="space-y-4">
+                  {items.map((item) => (
+                    <div key={item.variantId} className="flex gap-4 p-3 bg-white/70 rounded-lg border border-blue-300">
+                      <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-md overflow-hidden flex-shrink-0">
+                        {item.product.node.images?.edges?.[0]?.node && (
+                          <img
+                            src={item.product.node.images.edges[0].node.url}
+                            alt={item.product.node.title}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium truncate text-gray-800">{item.product.node.title}</h4>
+                        <p className="text-sm text-gray-600">
+                          {item.selectedOptions.map(option => option.value).join(' • ')}
+                        </p>
+                        <p className="font-semibold text-blue-700">
+                          {item.price.currencyCode === 'USD' ? '$' : 'R$'} {parseFloat(item.price.amount).toFixed(2)}
+                        </p>
+                      </div>
+                      
+                      <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6 text-red-600 hover:text-red-700 hover:bg-red-100"
+                          onClick={() => removeItem(item.variantId)}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                        
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-6 w-6 border-blue-300"
+                            onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="w-8 text-center text-sm font-bold">{item.quantity}</span>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-6 w-6 border-blue-300"
+                            onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Fixed checkout section */}
+              <div className="flex-shrink-0 space-y-4 pt-4 border-t border-blue-300 bg-white/50 rounded-t-lg p-4 mt-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-semibold text-gray-800">Total</span>
+                  <span className="text-xl font-bold text-blue-700">
+                    {items[0]?.price.currencyCode === 'USD' ? '$' : 'R$'} {totalPrice.toFixed(2)}
+                  </span>
+                </div>
+                
+                <Button 
+                  onClick={handleCheckout}
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700" 
+                  size="lg"
+                  disabled={items.length === 0 || isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Criando Checkout...
+                    </>
+                  ) : (
+                    <>
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Finalizar Compra
+                    </>
+                  )}
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+};

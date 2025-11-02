@@ -353,6 +353,32 @@ const AutismScreen = ({ onNavigate, textSize, voiceSpeed, userName }: AutismScre
           </div>
         </div>
 
+        {/* Botão para Loja */}
+        <div>
+          <div className="max-w-md mx-auto">
+            <Card className="cursor-pointer transition-all duration-300 border bg-white/70 border-blue-300 hover:border-purple-400 hover:scale-105">
+              <div className="p-6 flex flex-col items-center text-center space-y-3">
+                <div className="text-3xl">🛒</div>
+                <h3 className="text-lg font-bold text-gray-800">
+                  Conheça nossa Loja com produtos para autistas e atípicos
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Produtos especiais selecionados para você
+                </p>
+                <Button
+                  onClick={() => {
+                    speak("Loja Atípicos");
+                    onNavigate('shop');
+                  }}
+                  className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg"
+                >
+                  Venha conhecer!
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </div>
+
         {/* Botão para Planos */}
         <div className="text-center">
           <Button

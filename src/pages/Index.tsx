@@ -13,6 +13,7 @@ import ProfissionaisScreen from '@/components/ProfissionaisScreen';
 import LetrarScreen from '@/components/LetrarScreen';
 import FonoaudiologaScreen from '@/components/FonoaudiologaScreen';
 import MundoAtipicosScreen from '@/components/MundoAtipicosScreen';
+import ShopScreen from '@/components/ShopScreen';
 
 interface UserData {
   name: string;
@@ -145,6 +146,14 @@ const Index = () => {
       {currentPage === 'mundoatipicos' && (
         <MundoAtipicosScreen 
           onBack={() => handleNavigation('home')}
+        />
+      )}
+
+      {currentPage === 'shop' && (
+        <ShopScreen 
+          onNavigate={handleNavigation}
+          textSize={textSize}
+          voiceSpeed={voiceSpeed}
         />
       )}
     </div>
