@@ -1,0 +1,97 @@
+import React from 'react';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+
+interface CursosScreenProps {
+  onNavigate: (page: string) => void;
+  textSize: string;
+  voiceSpeed: string;
+}
+
+const CursosScreen = ({ onNavigate, textSize, voiceSpeed }: CursosScreenProps) => {
+  const speak = (text: string) => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'pt-BR';
+      utterance.rate = voiceSpeed === 'ultra-fast' ? 1.5 : voiceSpeed === 'fast' ? 1.2 : 0.8;
+      utterance.pitch = 1;
+      speechSynthesis.speak(utterance);
+    }
+  };
+
+  const cursosOptions = [
+    { text: "Curso TEA Básico", icon: "📖", speech: "Curso sobre Transtorno do Espectro Autista", description: "Introdução completa ao TEA" },
+    { text: "Comunicação PECS", icon: "💬", speech: "Curso de comunicação alternativa", description: "Sistema de comunicação por figuras" },
+    { text: "Vídeos educativos", icon: "🎥", speech: "Biblioteca de vídeos", description: "Conteúdo em vídeo para aprendizado" },
+    { text: "Alfabetização", icon: "✏️", speech: "Curso de alfabetização adaptada", description: "Métodos adaptados de leitura" },
+    { text: "Habilidades sociais", icon: "🤝", speech: "Desenvolvimento de habilidades sociais", description: "Interação e comunicação social" },
+    { text: "Autonomia diária", icon: "🎯", speech: "Curso de autonomia e independência", description: "Atividades do dia a dia" }
+  ];
+
+  const getTextClass = () => {
+    const baseSize = 'text-sm sm:text-base';
+    switch (textSize) {
+      case 'small': return `${baseSize} lg:text-lg`;
+      case 'medium': return `${baseSize} lg:text-xl`;
+      case 'large': return `${baseSize} lg:text-2xl`;
+      case 'gigante': return `${baseSize} lg:text-3xl`;
+      default: return `${baseSize} lg:text-xl`;
+    }
+  };
+
+  const getTitleClass = () => {
+    const baseSize = 'text-lg sm:text-xl';
+    switch (textSize) {
+      case 'small': return `${baseSize} lg:text-2xl`;
+      case 'medium': return `${baseSize} lg:text-3xl`;
+      case 'large': return `${baseSize} lg:text-4xl`;
+      case 'gigante': return `${baseSize} lg:text-5xl`;
+      default: return `${baseSize} lg:text-3xl`;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-green-100 via-emerald-100 to-teal-100 text-gray-800">
+      {/* Header */}
+      <header className="p-4 sm:p-6 lg:p-8 border-b-2 border-green-300/50 flex items-center">
+        <Button
+          onClick={() => onNavigate('autism')}
+          onMouseEnter={() => speak("Voltar")}
+          className="bg-green-500/70 hover:bg-green-500 text-white p-2 sm:p-3 rounded-lg mr-3 sm:mr-4 border border-green-400/50"
+        >
+          <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+        </Button>
+        <h1 className={`${getTitleClass()} font-bold text-green-700 flex items-center`}>
+          📚 Cursos Disponíveis
+        </h1>
+      </header>
+
+      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
+          {cursosOptions.map((option, index) => (
+            <Card
+              key={index}
+              className="cursor-pointer transition-all duration-300 border-2 bg-white/80 border-green-300 hover:border-emerald-400 hover:scale-105"
+              onClick={() => speak(option.speech)}
+            >
+              <div className="p-6 flex flex-col items-center text-center space-y-3">
+                <div className="text-4xl sm:text-5xl">
+                  {option.icon}
+                </div>
+                <h3 className={`${getTextClass()} font-bold text-gray-800`}>
+                  {option.text}
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-600">
+                  {option.description}
+                </p>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CursosScreen;
