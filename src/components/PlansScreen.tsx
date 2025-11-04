@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,9 +12,13 @@ import {
   Trophy,
   Users,
   Lock,
-  Star
+  Star,
+  Loader2,
+  ExternalLink
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface PlansScreenProps {
   onNavigate: (page: string) => void;
@@ -23,6 +27,30 @@ interface PlansScreenProps {
 
 const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
   const { language, t } = useLanguage();
+  const [loading, setLoading] = useState(false);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
+  const [checkingStatus, setCheckingStatus] = useState(true);
+  
+  const PLANS = {
+    bpc: {
+      priceId: 'price_1SPqcn9kmkJf8gmLp7rJPfZW',
+      productId: 'prod_TMZmTOjkhXspMP',
+      name: 'BPC LOAS',
+      price: 'R$ 49,00'
+    },
+    premium: {
+      priceId: 'price_1SPqd29kmkJf8gmLlpZwQY6y',
+      productId: 'prod_TMZmTuopvGzYtW',
+      name: 'Premium',
+      price: 'R$ 67,00'
+    },
+    annual: {
+      priceId: 'price_1SPqdE9kmkJf8gmLpac3nvsu',
+      productId: 'prod_TMZmtZMpiseynO',
+      name: 'Anual',
+      price: 'R$ 599,00'
+    }
+  };
   
   const speak = (text: string) => {
     if ('speechSynthesis' in window) {
@@ -34,23 +62,84 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
     }
   };
 
+  const checkSubscriptionStatus = async () => {
+    try {
+      setCheckingStatus(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setCheckingStatus(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-subscription');
+      
+      if (error) throw error;
+      
+      setSubscriptionStatus(data);
+    } catch (error) {
+      console.error('Erro ao verificar assinatura:', error);
+    } finally {
+      setCheckingStatus(false);
+    }
+  };
+
   useEffect(() => {
+    checkSubscriptionStatus();
     setTimeout(() => {
-      speak("ATIPICOS, o aplicativo desenvolvido especialmente para pessoas com autismo e TDAH. Planos disponíveis: BBC LOAS 29 reais e 90. Premium completo 67 reais. Teste grátis 3 dias.");
+      speak("ATIPICOS, o aplicativo desenvolvido especialmente para pessoas com autismo e TDAH. Planos disponíveis: BPC LOAS 49 reais. Premium 67 reais. Anual 599 reais. Teste grátis 3 dias.");
     }, 1000);
   }, []);
 
-  const handleFreeTrial = () => {
-    speak(t('plans.activateFreeTrial'));
+  const handleCheckout = async (priceId: string) => {
+    try {
+      setLoading(true);
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast.error("Você precisa fazer login primeiro!");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { priceId }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        speak("Abrindo página de pagamento");
+      }
+    } catch (error) {
+      console.error('Erro ao criar checkout:', error);
+      toast.error("Erro ao processar pagamento. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleBBCPlan = () => {
-    speak(t('plans.wantThisPlan'));
+  const handleManageSubscription = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.functions.invoke('customer-portal');
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Erro ao abrir portal:', error);
+      toast.error("Erro ao abrir gerenciador de assinatura.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handlePremiumPlan = () => {
-    speak(t('plans.wantPremium'));
-  };
+  const isTrialActive = subscriptionStatus?.isInTrial && !subscriptionStatus?.subscribed;
+  const hasActiveSubscription = subscriptionStatus?.subscribed;
 
   const bbcFeatures = [
     "Rotinas visuais personalizadas com lembretes por voz",
@@ -138,24 +227,62 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
           </div>
         </Card>
 
-        {/* Período Gratuito */}
-        <Card className="bg-gradient-to-r from-green-800 to-green-600 border-2 border-green-400">
-          <div className="p-4 sm:p-6 lg:p-8 text-center">
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-2 sm:mb-4">
-              🎁 {t('plans.freeTrial')}
-            </h2>
-            <p className="text-sm sm:text-base lg:text-lg text-green-100 mb-3 sm:mb-6">
-              {t('plans.freeTrialDesc')}
-            </p>
-            <Button
-              onClick={handleFreeTrial}
-              onMouseEnter={() => speak(t('plans.activateFreeTrial'))}
-              className="bg-white text-green-800 hover:bg-green-50 px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-bold border-2 border-green-200"
-            >
-              {t('plans.activateFreeTrial')}
-            </Button>
-          </div>
-        </Card>
+        {/* Status da Assinatura */}
+        {checkingStatus ? (
+          <Card className="bg-gray-800 border-2 border-gray-600">
+            <div className="p-6 text-center">
+              <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-400 mb-2" />
+              <p className="text-gray-300">Verificando status...</p>
+            </div>
+          </Card>
+        ) : hasActiveSubscription ? (
+          <Card className="bg-gradient-to-r from-green-800 to-green-600 border-2 border-green-400">
+            <div className="p-4 sm:p-6 lg:p-8 text-center">
+              <CheckCircle className="w-12 h-12 text-white mx-auto mb-4" />
+              <h2 className="text-xl font-bold text-white mb-2">
+                ✅ Assinatura Ativa
+              </h2>
+              <p className="text-green-100 mb-4">
+                Você tem acesso completo ao app!
+              </p>
+              <Button
+                onClick={handleManageSubscription}
+                disabled={loading}
+                className="bg-white text-green-800 hover:bg-green-50 px-6 py-3 rounded-xl font-bold"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <ExternalLink className="w-4 h-4 mr-2" />}
+                Gerenciar Assinatura
+              </Button>
+            </div>
+          </Card>
+        ) : isTrialActive ? (
+          <Card className="bg-gradient-to-r from-blue-800 to-purple-800 border-2 border-blue-400">
+            <div className="p-4 sm:p-6 lg:p-8 text-center">
+              <Star className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
+              <h2 className="text-xl font-bold text-white mb-2">
+                🎁 Trial Gratuito Ativo
+              </h2>
+              <p className="text-blue-100 mb-2">
+                Você está no período de teste gratuito!
+              </p>
+              <p className="text-sm text-blue-200">
+                Termina em: {new Date(subscriptionStatus?.trialEndsAt).toLocaleDateString('pt-BR')}
+              </p>
+            </div>
+          </Card>
+        ) : (
+          <Card className="bg-gradient-to-r from-red-800 to-orange-800 border-2 border-red-400">
+            <div className="p-4 sm:p-6 lg:p-8 text-center">
+              <Lock className="w-12 h-12 text-red-300 mx-auto mb-4" />
+              <h2 className="text-xl font-bold text-white mb-2">
+                ⚠️ Trial Expirado
+              </h2>
+              <p className="text-red-100 mb-4">
+                Seu período de teste terminou. Assine um plano para continuar usando!
+              </p>
+            </div>
+          </Card>
+        )}
 
         {/* Grid de Planos */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
@@ -205,11 +332,13 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
               </div>
 
               <Button
-                onClick={handleBBCPlan}
+                onClick={() => handleCheckout(PLANS.bpc.priceId)}
+                disabled={loading || hasActiveSubscription}
                 onMouseEnter={() => speak(t('plans.wantThisPlan'))}
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 sm:py-4 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-bold border-2 border-blue-400"
+                className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 sm:py-4 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-bold border-2 border-blue-400 disabled:opacity-50"
               >
-                {t('plans.wantThisPlan')}
+                {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                {hasActiveSubscription ? 'Plano Ativo' : t('plans.wantThisPlan')}
               </Button>
             </div>
           </Card>
@@ -264,13 +393,27 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
                 </ul>
               </div>
 
-              <Button
-                onClick={handlePremiumPlan}
-                onMouseEnter={() => speak(t('plans.wantPremium'))}
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white py-3 sm:py-4 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-bold border-2 border-purple-400 shadow-lg"
-              >
-                {t('plans.wantPremium')}
-              </Button>
+              <div className="space-y-3">
+                <Button
+                  onClick={() => handleCheckout(PLANS.premium.priceId)}
+                  disabled={loading || hasActiveSubscription}
+                  onMouseEnter={() => speak('Plano Premium Mensal')}
+                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white py-3 sm:py-4 rounded-xl text-base sm:text-lg font-bold border-2 border-purple-400 shadow-lg disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                  {hasActiveSubscription ? 'Plano Ativo' : 'Assinar Mensal - R$ 67,00'}
+                </Button>
+                
+                <Button
+                  onClick={() => handleCheckout(PLANS.annual.priceId)}
+                  disabled={loading || hasActiveSubscription}
+                  onMouseEnter={() => speak('Plano Anual com Desconto')}
+                  className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white py-3 sm:py-4 rounded-xl text-base sm:text-lg font-bold border-2 border-yellow-400 shadow-lg disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                  {hasActiveSubscription ? 'Plano Ativo' : 'Assinar Anual - R$ 599,00'}
+                </Button>
+              </div>
             </div>
           </Card>
         </div>
@@ -288,22 +431,18 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
           </div>
         </Card>
 
-        {/* Rodapé com Teste Gratuito */}
-        <Card className="bg-gradient-to-r from-green-700 to-blue-700 border-2 border-green-500">
+        {/* Informações sobre o Trial */}
+        <Card className="bg-gradient-to-r from-blue-700 to-purple-700 border-2 border-blue-500">
           <div className="p-4 sm:p-6 text-center">
             <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-3 sm:mb-4">
-              🚀 {t('plans.tryFree')}
+              🎁 3 Dias Grátis para Testar
             </h3>
-            <p className="text-sm sm:text-base text-green-100 mb-4 sm:mb-6">
-              {t('plans.tryFreeDesc')}
+            <p className="text-sm sm:text-base text-blue-100 mb-2">
+              Cadastre-se e ganhe 3 dias grátis de acesso total ao app!
             </p>
-            <Button
-              onClick={handleFreeTrial}
-              onMouseEnter={() => speak(t('plans.activateFreeTrial'))}
-              className="bg-white text-green-800 hover:bg-green-50 px-8 sm:px-12 lg:px-16 py-4 sm:py-6 rounded-xl text-lg sm:text-xl lg:text-2xl font-bold border-2 border-green-200 shadow-lg"
-            >
-              {t('plans.activateFreeTrial')}
-            </Button>
+            <p className="text-xs sm:text-sm text-blue-200">
+              Depois escolha o plano ideal para você. Sem compromisso!
+            </p>
           </div>
         </Card>
       </div>
