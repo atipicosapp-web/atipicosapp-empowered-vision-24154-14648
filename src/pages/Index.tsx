@@ -14,6 +14,8 @@ import LetrarScreen from '@/components/LetrarScreen';
 import FonoaudiologaScreen from '@/components/FonoaudiologaScreen';
 import MundoAtipicosScreen from '@/components/MundoAtipicosScreen';
 import ShopScreen from '@/components/ShopScreen';
+import ProductDetailScreen from '@/components/ProductDetailScreen';
+import { ShopifyProduct } from '@/lib/shopify';
 
 interface UserData {
   name: string;
@@ -26,10 +28,14 @@ const Index = () => {
   const [textSize, setTextSize] = useState('large');
   const [voiceSpeed, setVoiceSpeed] = useState('normal'); // normal, fast, ultra-fast
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
 
-  const handleNavigation = (page: string, newUserData?: UserData) => {
-    if (newUserData) {
-      setUserData(newUserData);
+  const handleNavigation = (page: string, data?: any) => {
+    if (data?.name && data?.email) {
+      setUserData(data);
+    }
+    if (data?.product) {
+      setSelectedProduct(data.product);
     }
     setCurrentPage(page);
   };
@@ -151,6 +157,15 @@ const Index = () => {
 
       {currentPage === 'shop' && (
         <ShopScreen 
+          onNavigate={handleNavigation}
+          textSize={textSize}
+          voiceSpeed={voiceSpeed}
+        />
+      )}
+
+      {currentPage === 'product-detail' && selectedProduct && (
+        <ProductDetailScreen 
+          product={selectedProduct}
           onNavigate={handleNavigation}
           textSize={textSize}
           voiceSpeed={voiceSpeed}

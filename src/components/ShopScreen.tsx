@@ -7,7 +7,7 @@ import { useCartStore } from '@/stores/cartStore';
 import { CartDrawer } from '@/components/CartDrawer';
 
 interface ShopScreenProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, data?: any) => void;
   textSize: string;
   voiceSpeed: string;
 }
@@ -136,6 +136,10 @@ const ShopScreen = ({ onNavigate, textSize }: ShopScreenProps) => {
               return (
                 <Card
                   key={product.node.id}
+                  onClick={() => {
+                    speak(`Visualizando ${product.node.title}`);
+                    onNavigate('product-detail', { product });
+                  }}
                   className="cursor-pointer transition-all duration-300 border bg-white/70 border-blue-300 hover:border-purple-400 hover:scale-105 overflow-hidden"
                 >
                   <div className="aspect-square overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100">
@@ -172,7 +176,10 @@ const ShopScreen = ({ onNavigate, textSize }: ShopScreenProps) => {
                       </div>
                       
                       <Button
-                        onClick={() => handleAddToCart(product)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCart(product);
+                        }}
                         disabled={!variant?.availableForSale}
                         className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                       >
