@@ -218,7 +218,7 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
             <div>
               <h3 className="text-white font-bold text-lg mb-4">{t('footer.socialMedia')}</h3>
               <div className="grid grid-cols-3 gap-3">
-                <a href="#" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
+                <a href="https://youtube.com/@atipicosapp?si=LTz_HT24yHNC4pEe" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
                   <FaYoutube className="w-4 h-4" />
                   YouTube
                 </a>
@@ -226,23 +226,23 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
                   <FaLinkedin className="w-4 h-4" />
                   LinkedIn
                 </a>
-                <a href="#" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
+                <a href="https://www.instagram.com/atipicosapp?igsh=cW84MDNiYjdqMjUy" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
                   <FaInstagram className="w-4 h-4" />
                   Instagram
                 </a>
-                <a href="#" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
+                <a href="https://www.facebook.com/share/17qQ84qNXU/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
                   <FaFacebook className="w-4 h-4" />
                   Facebook
                 </a>
-                <a href="#" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
+                <a href="https://www.tiktok.com/@atipicosapp?_r=1&_t=ZS-91A1k4AVkg6" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
                   <FaTiktok className="w-4 h-4" />
                   TikTok
                 </a>
-                <a href="#" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
+                <a href="https://k.kwai.com/u/@Atipicosapp/CW0KsWMn" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
                   <Heart className="w-4 h-4" />
                   Kawai
                 </a>
-                <a href="#" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
+                <a href="https://pin.it/36BkoQIYb" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
                   <FaPinterest className="w-4 h-4" />
                   Pinterest
                 </a>
