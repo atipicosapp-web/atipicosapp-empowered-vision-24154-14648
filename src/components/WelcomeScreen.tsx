@@ -15,6 +15,7 @@ interface WelcomeScreenProps {
 interface UserData {
   name: string;
   email: string;
+  phone: string;
   disability: string;
 }
 
@@ -22,6 +23,7 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
   const { language, setLanguage, t } = useLanguage();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
 
   const languages = [
@@ -47,10 +49,11 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
   }, [language]);
 
   const handleFinish = () => {
-    if (name && email) {
+    if (name && email && phone) {
       const userData: UserData = {
         name,
         email,
+        phone,
         disability: 'autismo'
       };
       speak(`${t('welcome.speechFinish')}, ${name}!`);
@@ -102,6 +105,10 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
         <p className="text-base sm:text-lg lg:text-xl text-white/90 drop-shadow">
           {t('welcome.subtitle')}
         </p>
+        <p className="text-base sm:text-lg lg:text-xl text-white/90 drop-shadow mt-4">
+          No amor não há medo<br />
+          1 João 4:18
+        </p>
       </header>
 
       <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
@@ -149,6 +156,20 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
                     />
                   </div>
 
+                  <div>
+                    <Label htmlFor="phone" className="text-foreground text-sm sm:text-base font-medium mb-2 block">
+                      Telefone / WhatsApp
+                    </Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="bg-card border-2 border-primary text-card-foreground text-base sm:text-lg p-3 sm:p-4 rounded-xl"
+                      placeholder="Seu telefone / WhatsApp"
+                    />
+                  </div>
+
                   {/* Botões de cadastro com ícones */}
                   <div className="space-y-3 mb-4">
                     <p className="text-center text-sm text-muted-foreground mb-3">
@@ -175,7 +196,7 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
                       <Button
                         onClick={handleFinish}
                         onMouseEnter={() => speak(t('welcome.registerContinue'))}
-                        disabled={!name || !email}
+                        disabled={!name || !email || !phone}
                         className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
                       >
                         <Mail className="w-4 h-4" />
