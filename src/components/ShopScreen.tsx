@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { getProducts, ShopifyProduct } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { CartDrawer } from '@/components/CartDrawer';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ShopScreenProps {
   onNavigate: (page: string, data?: any) => void;
@@ -12,7 +13,8 @@ interface ShopScreenProps {
   voiceSpeed: string;
 }
 
-const ShopScreen = ({ onNavigate, textSize }: ShopScreenProps) => {
+const ShopScreen = ({ onNavigate, textSize, voiceSpeed }: ShopScreenProps) => {
+  const { language, t } = useLanguage();
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const addItem = useCartStore(state => state.addItem);
@@ -20,16 +22,17 @@ const ShopScreen = ({ onNavigate, textSize }: ShopScreenProps) => {
   const speak = (text: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'pt-BR';
-      utterance.rate = 0.8;
+      utterance.lang = language;
+      utterance.rate = voiceSpeed === 'ultra-fast' ? 1.5 : voiceSpeed === 'fast' ? 1.2 : 0.8;
       utterance.pitch = 1;
       speechSynthesis.speak(utterance);
     }
   };
 
   useEffect(() => {
+    speak(t('shop.speechOpened'));
     loadProducts();
-  }, []);
+  }, [language]);
 
   const loadProducts = async () => {
     try {
@@ -57,7 +60,7 @@ const ShopScreen = ({ onNavigate, textSize }: ShopScreenProps) => {
     };
     
     addItem(cartItem);
-    speak(`${product.node.title} adicionado ao carrinho`);
+    speak(`${product.node.title} ${t('shop.speechAddedToCart')}`);
   };
 
   const getTextClass = () => {
@@ -89,7 +92,7 @@ const ShopScreen = ({ onNavigate, textSize }: ShopScreenProps) => {
         <div className="flex justify-between items-center mb-3">
           <Button
             onClick={() => {
-              speak("Voltando");
+              speak(t('shop.back'));
               onNavigate('home');
             }}
             className="bg-purple-600/70 hover:bg-purple-600 text-white p-2 sm:p-3 rounded-lg border border-purple-400/50"
@@ -97,7 +100,7 @@ const ShopScreen = ({ onNavigate, textSize }: ShopScreenProps) => {
             <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </Button>
           <h1 className={`${getTitleClass()} font-bold text-blue-800 flex-1 text-center`}>
-            🛒 Loja Atípicos
+            🛒 {t('shop.title')}
           </h1>
           <CartDrawer />
         </div>
@@ -111,7 +114,7 @@ const ShopScreen = ({ onNavigate, textSize }: ShopScreenProps) => {
           <div className="text-center py-12">
             <div className="inline-block p-4 bg-purple-100 rounded-lg border border-purple-300">
               <p className={`${getTextClass()} text-purple-700 font-bold`}>
-                Carregando produtos... 🔄
+                {t('shop.loading')} 🔄
               </p>
             </div>
           </div>
@@ -120,7 +123,7 @@ const ShopScreen = ({ onNavigate, textSize }: ShopScreenProps) => {
             <Card className="max-w-md mx-auto p-8 bg-white/70 border-blue-300">
               <div className="text-4xl mb-4">🛍️</div>
               <h2 className={`${getTitleClass()} text-blue-700 font-bold mb-4`}>
-                Nenhum produto encontrado
+                {t('shop.noProducts')}
               </h2>
               <p className={`${getTextClass()} text-gray-600`}>
                 Em breve teremos produtos incríveis para você!
@@ -184,7 +187,7 @@ const ShopScreen = ({ onNavigate, textSize }: ShopScreenProps) => {
                         className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                       >
                         <ShoppingCart className="w-4 h-4 mr-2" />
-                        Adicionar
+                        {t('shop.addToCart')}
                       </Button>
                     </div>
                   </div>

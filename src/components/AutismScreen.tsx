@@ -24,6 +24,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import AIChatField from '@/components/AIChatField';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AutismScreenProps {
   onNavigate: (page: string) => void;
@@ -33,14 +34,15 @@ interface AutismScreenProps {
 }
 
 const AutismScreen = ({ onNavigate, textSize, voiceSpeed, userName }: AutismScreenProps) => {
+  const { language, t } = useLanguage();
   const [completedTasks, setCompletedTasks] = useState<number[]>([]);
   const [currentMood, setCurrentMood] = useState('');
 
   const speak = (text: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'pt-BR';
-      utterance.rate = 0.8; // Velocidade calma
+      utterance.lang = language;
+      utterance.rate = voiceSpeed === 'ultra-fast' ? 1.5 : voiceSpeed === 'fast' ? 1.2 : 0.8;
       utterance.pitch = 1;
       speechSynthesis.speak(utterance);
     }
@@ -50,58 +52,58 @@ const AutismScreen = ({ onNavigate, textSize, voiceSpeed, userName }: AutismScre
     setTimeout(() => {
       const greeting = getGreeting();
       const message = userName 
-        ? `${greeting}, ${userName}! Atípicos carregado. Ambiente calmo e organizado pronto.`
-        : "Atípicos carregado. Seu espaço seguro e organizado está pronto.";
+        ? `${greeting}, ${userName}! ${t('autism.title')} ${t('autism.calmReady')}`
+        : `${t('autism.title')} ${t('autism.subtitle')}`;
       speak(message);
     }, 1000);
-  }, [userName]);
+  }, [userName, language]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Bom dia";
-    if (hour < 18) return "Boa tarde";
-    return "Boa noite";
+    if (hour < 12) return t('home.goodMorning');
+    if (hour < 18) return t('home.goodAfternoon');
+    return t('home.goodEvening');
   };
 
   const communicationCards = [
-    { text: "Previsões de Crises", icon: "⚠️", action: () => { speak("Previsões de Crises"); onNavigate('crises'); } },
-    { text: "Cursos", icon: "📚", action: () => { speak("Cursos"); onNavigate('cursos'); } },
-    { text: "Comunidade", icon: "👥", action: () => { speak("Comunidade"); onNavigate('comunidade'); } },
-    { text: "Profissionais", icon: "👨‍⚕️", action: () => { speak("Profissionais"); onNavigate('profissionais'); } },
-    { text: "Preciso de ajuda", icon: "🆘", action: () => { speak("Preciso de ajuda"); setCurrentMood("Preciso de ajuda"); } },
-    { text: "Mundo Atípicos", icon: "🧩", action: () => { speak("Mundo Atípicos"); onNavigate('mundoatipicos'); } },
-    { text: "Letrar", icon: "✏️", action: () => { speak("Letrar - Alfabetização"); onNavigate('letrar'); } },
-    { text: "Fonoaudióloga", icon: "🎤", action: () => { speak("Fonoaudióloga"); onNavigate('fonoaudiologa'); } }
+    { text: t('autism.crisesPredictions'), icon: "⚠️", action: () => { speak(t('autism.crisesPredictions')); onNavigate('crises'); } },
+    { text: t('autism.courses'), icon: "📚", action: () => { speak(t('autism.courses')); onNavigate('cursos'); } },
+    { text: t('autism.community'), icon: "👥", action: () => { speak(t('autism.community')); onNavigate('comunidade'); } },
+    { text: t('autism.professionals'), icon: "👨‍⚕️", action: () => { speak(t('autism.professionals')); onNavigate('profissionais'); } },
+    { text: t('autism.needHelp'), icon: "🆘", action: () => { speak(t('autism.needHelp')); setCurrentMood(t('autism.needHelp')); } },
+    { text: t('autism.atypicalWorld'), icon: "🧩", action: () => { speak(t('autism.atypicalWorld')); onNavigate('mundoatipicos'); } },
+    { text: t('autism.letrar'), icon: "✏️", action: () => { speak(t('autism.letrar')); onNavigate('letrar'); } },
+    { text: t('autism.speechTherapist'), icon: "🎤", action: () => { speak(t('autism.speechTherapist')); onNavigate('fonoaudiologa'); } }
   ];
 
 
   const mainTools = [
-    { text: "Professora IA", icon: GraduationCap, description: "Ensina e responde perguntas", action: () => speak("Professora IA") },
-    { text: "Terapeuta Virtual", icon: Heart, description: "Suporte emocional e orientação", action: () => speak("Terapeuta Virtual") },
-    { text: "Comunicação PECS", icon: MessageCircle, description: "Fale usando imagens", action: () => { speak("Comunicação PECS"); onNavigate('pecs'); } },
-    { text: "Rotina Visual", icon: Calendar, description: "Organize seu dia com pictogramas", action: () => speak("Rotina Visual") },
-    { text: "Leitura de Imagem", icon: Camera, description: "IA descreve fotos por voz", action: () => speak("Leitura de Imagem") },
-    { text: "Tela de Emoções", icon: Heart, description: "Como você está se sentindo?", action: () => speak("Tela de Emoções") }
+    { text: t('autism.teacherAI'), icon: GraduationCap, description: t('autism.teacherAIDesc'), action: () => speak(t('autism.teacherAI')) },
+    { text: t('autism.virtualTherapist'), icon: Heart, description: t('autism.virtualTherapistDesc'), action: () => speak(t('autism.virtualTherapist')) },
+    { text: t('autism.pecsCommunication'), icon: MessageCircle, description: t('autism.pecsCommunicationDesc'), action: () => { speak(t('autism.pecsCommunication')); onNavigate('pecs'); } },
+    { text: t('autism.visualRoutine'), icon: Calendar, description: t('autism.visualRoutineDesc'), action: () => speak(t('autism.visualRoutine')) },
+    { text: t('autism.imageReading'), icon: Camera, description: t('autism.imageReadingDesc'), action: () => speak(t('autism.imageReading')) },
+    { text: t('autism.emotionsScreen'), icon: Heart, description: t('autism.emotionsScreenDesc'), action: () => speak(t('autism.emotionsScreen')) }
   ];
 
   const moreResources = [
-    { text: "Som e Música", icon: Music, description: "Playlist relaxante" },
-    { text: "Atividades Educativas", icon: BookOpen, description: "Jogos e aprendizado" },
-    { text: "Espaço Sensorial", icon: Sparkles, description: "Relaxamento e calma" },
-    { text: "Mapa Seguro", icon: Map, description: "Lugares tranquilos" },
-    { text: "Comando de Voz", icon: Mic, description: "Controle por voz" },
-    { text: "Configuração", icon: SettingsIcon, description: "Personalize seu app" }
+    { text: t('autism.soundMusic'), icon: Music, description: t('autism.soundMusicDesc') },
+    { text: t('autism.educationalActivities'), icon: BookOpen, description: t('autism.educationalActivitiesDesc') },
+    { text: t('autism.sensorySpace'), icon: Sparkles, description: t('autism.sensorySpaceDesc') },
+    { text: t('autism.safeMap'), icon: Map, description: t('autism.safeMapDesc') },
+    { text: t('autism.voiceCommand'), icon: Mic, description: t('autism.voiceCommandDesc') },
+    { text: t('autism.configuration'), icon: SettingsIcon, description: t('autism.configurationDesc') }
   ];
 
   const dailyRoutine = [
-    { id: 1, task: "Acordar", icon: Sun, time: "07:00", completed: false },
-    { id: 2, task: "Café da manhã", icon: Coffee, time: "08:00", completed: false },
-    { id: 3, task: "Atividade matinal", icon: Gamepad2, time: "09:00", completed: false },
-    { id: 4, task: "Almoço", icon: Utensils, time: "12:00", completed: false },
-    { id: 5, task: "Descanso", icon: Moon, time: "14:00", completed: false },
-    { id: 6, task: "Lanche", icon: Coffee, time: "16:00", completed: false },
-    { id: 7, task: "Jantar", icon: Utensils, time: "19:00", completed: false },
-    { id: 8, task: "Dormir", icon: Moon, time: "21:00", completed: false }
+    { id: 1, task: t('autism.wakeUp'), icon: Sun, time: "07:00", completed: false },
+    { id: 2, task: t('autism.breakfast'), icon: Coffee, time: "08:00", completed: false },
+    { id: 3, task: t('autism.morningActivity'), icon: Gamepad2, time: "09:00", completed: false },
+    { id: 4, task: t('autism.lunch'), icon: Utensils, time: "12:00", completed: false },
+    { id: 5, task: t('autism.rest'), icon: Moon, time: "14:00", completed: false },
+    { id: 6, task: t('autism.afternoonActivity'), icon: Coffee, time: "16:00", completed: false },
+    { id: 7, task: t('autism.dinner'), icon: Utensils, time: "19:00", completed: false },
+    { id: 8, task: t('autism.sleep'), icon: Moon, time: "21:00", completed: false }
   ];
 
 
@@ -109,7 +111,7 @@ const AutismScreen = ({ onNavigate, textSize, voiceSpeed, userName }: AutismScre
     if (!completedTasks.includes(taskId)) {
       setCompletedTasks([...completedTasks, taskId]);
       const task = dailyRoutine.find(t => t.id === taskId);
-      speak(`${task?.task} concluída! Muito bem!`);
+      speak(`${task?.task} ${t('autism.taskCompleted')}`);
     } else {
       const task = dailyRoutine.find(t => t.id === taskId);
       speak(task?.task || '');
@@ -145,11 +147,11 @@ const AutismScreen = ({ onNavigate, textSize, voiceSpeed, userName }: AutismScre
         <div className="flex justify-between items-center mb-3">
           <div className="w-12"></div>
           <h1 className={`${getTitleClass()} font-bold text-blue-800 scale-110`}>
-            Atípicos 💙
+            {t('autism.title')} 💙
           </h1>
           <Button
             onClick={() => {
-              speak("Configurações");
+              speak(t('home.settings'));
               onNavigate('settings');
             }}
             className="bg-purple-600/70 hover:bg-purple-600 text-white p-2 sm:p-3 rounded-lg border border-purple-400/50"
@@ -158,7 +160,7 @@ const AutismScreen = ({ onNavigate, textSize, voiceSpeed, userName }: AutismScre
           </Button>
         </div>
         <p className={`${getTextClass()} text-purple-700`}>
-          {userName ? `${getGreeting()}, ${userName}! 🌟` : 'Seu espaço calmo e organizado 🌈'}
+          {userName ? `${getGreeting()}, ${userName}! 🌟` : t('autism.subtitle')}
         </p>
         
         {/* Humor atual */}

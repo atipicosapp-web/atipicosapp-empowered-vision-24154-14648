@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ShopifyProduct } from '@/lib/shopify';
 import { useCartStore } from '@/stores/cartStore';
 import { CartDrawer } from '@/components/CartDrawer';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProductDetailScreenProps {
   product: ShopifyProduct;
@@ -14,7 +15,8 @@ interface ProductDetailScreenProps {
   voiceSpeed: string;
 }
 
-const ProductDetailScreen = ({ product, onNavigate, textSize }: ProductDetailScreenProps) => {
+const ProductDetailScreen = ({ product, onNavigate, textSize, voiceSpeed }: ProductDetailScreenProps) => {
+  const { language, t } = useLanguage();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(product.node.variants.edges[0]?.node);
@@ -23,8 +25,8 @@ const ProductDetailScreen = ({ product, onNavigate, textSize }: ProductDetailScr
   const speak = (text: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'pt-BR';
-      utterance.rate = 0.8;
+      utterance.lang = language;
+      utterance.rate = voiceSpeed === 'ultra-fast' ? 1.5 : voiceSpeed === 'fast' ? 1.2 : 0.8;
       utterance.pitch = 1;
       speechSynthesis.speak(utterance);
     }
@@ -43,7 +45,7 @@ const ProductDetailScreen = ({ product, onNavigate, textSize }: ProductDetailScr
     };
     
     addItem(cartItem);
-    speak(`${quantity} ${product.node.title} adicionado ao carrinho`);
+    speak(`${quantity} ${product.node.title} ${t('product.addedToCart')}`);
   };
 
   const getTextClass = () => {
@@ -80,7 +82,7 @@ const ProductDetailScreen = ({ product, onNavigate, textSize }: ProductDetailScr
         <div className="flex justify-between items-center">
           <Button
             onClick={() => {
-              speak("Voltando para a loja");
+              speak(t('product.backToShop'));
               onNavigate('shop');
             }}
             className="bg-purple-600/70 hover:bg-purple-600 text-white p-2 sm:p-3 rounded-lg border border-purple-400/50"
@@ -151,9 +153,9 @@ const ProductDetailScreen = ({ product, onNavigate, textSize }: ProductDetailScr
                     {currency === 'USD' ? '$' : 'R$'} {parseFloat(price).toFixed(2)}
                   </span>
                   {selectedVariant?.availableForSale ? (
-                    <Badge className="bg-green-500 text-white">Em estoque</Badge>
+                    <Badge className="bg-green-500 text-white">{t('product.available')}</Badge>
                   ) : (
-                    <Badge className="bg-red-500 text-white">Indisponível</Badge>
+                    <Badge className="bg-red-500 text-white">{t('product.outOfStock')}</Badge>
                   )}
                 </div>
               </div>
@@ -161,7 +163,7 @@ const ProductDetailScreen = ({ product, onNavigate, textSize }: ProductDetailScr
               {/* Descrição */}
               {product.node.description && (
                 <Card className="p-4 bg-white/70 border-blue-300">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-2">Descrição</h3>
+                  <h3 className="text-lg font-semibold text-blue-800 mb-2">{t('product.description')}</h3>
                   <p className={`${getTextClass()} text-gray-700 whitespace-pre-wrap`}>
                     {product.node.description}
                   </p>
@@ -171,7 +173,7 @@ const ProductDetailScreen = ({ product, onNavigate, textSize }: ProductDetailScr
               {/* Variantes/Opções */}
               {product.node.options.length > 0 && product.node.options[0].values.length > 1 && (
                 <Card className="p-4 bg-white/70 border-blue-300">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-3">Opções</h3>
+                  <h3 className="text-lg font-semibold text-blue-800 mb-3">{t('product.selectVariant')}</h3>
                   {product.node.options.map((option) => (
                     <div key={option.name} className="mb-3">
                       <label className="text-sm font-medium text-gray-700 mb-2 block">
@@ -203,7 +205,7 @@ const ProductDetailScreen = ({ product, onNavigate, textSize }: ProductDetailScr
 
               {/* Quantidade */}
               <Card className="p-4 bg-white/70 border-blue-300">
-                <h3 className="text-lg font-semibold text-blue-800 mb-3">Quantidade</h3>
+                <h3 className="text-lg font-semibold text-blue-800 mb-3">{t('product.quantity')}</h3>
                 <div className="flex items-center gap-4">
                   <Button
                     variant="outline"
@@ -235,7 +237,7 @@ const ProductDetailScreen = ({ product, onNavigate, textSize }: ProductDetailScr
                 size="lg"
               >
                 <ShoppingCart className="w-6 h-6 mr-3" />
-                Adicionar ao Carrinho
+                {t('product.addToCart')}
               </Button>
 
               {/* Informações de Entrega */}
