@@ -25,6 +25,7 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const hasSpokenWelcome = React.useRef(false);
 
   const languages = [
     { code: 'pt-BR' as const, name: t('lang.portuguese') },
@@ -43,10 +44,14 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      speak(t('welcome.speechWelcome'));
-    }, 1000);
-  }, [language]);
+    // Só fala a mensagem de boas-vindas uma vez, quando o componente monta pela primeira vez
+    if (!hasSpokenWelcome.current) {
+      setTimeout(() => {
+        speak(t('welcome.speechWelcome'));
+        hasSpokenWelcome.current = true;
+      }, 1000);
+    }
+  }, []);
 
   const handleFinish = () => {
     if (name && email && phone) {
@@ -105,7 +110,7 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
         <p className="text-base sm:text-lg lg:text-xl text-white/90 drop-shadow">
           {t('welcome.subtitle')}
         </p>
-        <p className="text-base sm:text-lg lg:text-xl text-blue-500 drop-shadow mt-4">
+        <p className="text-base sm:text-lg lg:text-xl text-white/90 drop-shadow mt-4">
           No amor não há medo<br />
           1 João 4:18
         </p>
