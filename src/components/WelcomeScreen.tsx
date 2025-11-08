@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Heart, Globe, Mail } from 'lucide-react';
-import { FaGoogle, FaYoutube, FaLinkedin, FaInstagram, FaFacebook, FaTiktok, FaPinterest, FaTwitter } from 'react-icons/fa';
+import { FaGoogle, FaYoutube, FaLinkedin, FaInstagram, FaFacebook, FaTiktok, FaPinterest, FaTwitter, FaWhatsapp } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface WelcomeScreenProps {
@@ -105,7 +105,7 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
         <p className="text-base sm:text-lg lg:text-xl text-white/90 drop-shadow">
           {t('welcome.subtitle')}
         </p>
-        <p className="text-base sm:text-lg lg:text-xl text-white/90 drop-shadow mt-4">
+        <p className="text-base sm:text-lg lg:text-xl text-blue-500 drop-shadow mt-4">
           No amor não há medo<br />
           1 João 4:18
         </p>
@@ -186,14 +186,6 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
                       </Button>
                       
                       <Button
-                        onClick={() => speak(t('welcome.continueFacebook'))}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2"
-                      >
-                        <FaFacebook className="w-4 h-4" />
-                        {t('welcome.continueFacebook')}
-                      </Button>
-                      
-                      <Button
                         onClick={handleFinish}
                         onMouseEnter={() => speak(t('welcome.registerContinue'))}
                         disabled={!name || !email || !phone}
@@ -249,6 +241,10 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
                 <a href="#" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
                   <FaTwitter className="w-4 h-4" />
                   Twitter (X)
+                </a>
+                <a href="https://wa.me/message/IHI2MXQKN6R7D1" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/80 hover:text-white text-sm py-1">
+                  <FaWhatsapp className="w-4 h-4" />
+                  WhatsApp
                 </a>
               </div>
             </div>
