@@ -220,4 +220,73 @@ export default {
   'cart.total': 'Total',
   'cart.remove': 'Remove',
   'cart.quantity': 'Quantity',
+  
+  // Family Area
+  'family.title': 'Progress and Family 💜',
+  'family.subtitle': 'View development, set goals and share achievements.',
+  'family.back': 'Back',
+  
+  // Family Menu
+  'family.menu.progress': '📊 Overall Progress',
+  'family.menu.routines': '⚙️ Routines and Goals',
+  'family.menu.reports': '🧠 AI Voice and Reports',
+  'family.menu.school': '🏫 School Connection',
+  'family.menu.achievements': '🏅 Achievements',
+  
+  // Progress Screen
+  'family.progress.title': 'Overall Progress',
+  'family.progress.communication': 'Communication (PECs)',
+  'family.progress.emotions': 'Emotions',
+  'family.progress.routine': 'Visual Routine',
+  'family.progress.teacher': 'AI Teacher',
+  'family.progress.total': 'Total Evolution',
+  'family.progress.downloadPDF': 'Download PDF Report',
+  'family.progress.share': 'Share with Therapist / School',
+  'family.progress.listenReport': 'Listen to report',
+  
+  // Routines Screen
+  'family.routines.title': 'Routines and Goals',
+  'family.routines.add': 'Add new routine',
+  'family.routines.name': 'Routine name',
+  'family.routines.type': 'Type',
+  'family.routines.time': 'Time',
+  'family.routines.completionRate': 'Completion rate',
+  'family.routines.save': 'Save',
+  'family.routines.cancel': 'Cancel',
+  'family.routines.delete': 'Delete',
+  'family.routines.completed': 'Routine successfully completed!',
+  'family.routines.types.hygiene': 'Hygiene',
+  'family.routines.types.food': 'Food',
+  'family.routines.types.school': 'School',
+  'family.routines.types.communication': 'Communication',
+  'family.routines.types.exercise': 'Exercise',
+  'family.routines.types.leisure': 'Leisure',
+  
+  // Reports Screen
+  'family.reports.title': 'AI Voice and Reports',
+  'family.reports.listenSummary': 'Listen to day summary',
+  'family.reports.generatePDF': 'Generate narrated PDF',
+  'family.reports.sendToTherapist': 'Send Report to Therapist',
+  'family.reports.observations': 'Family observations',
+  'family.reports.addObservation': 'Add observation',
+  'family.reports.noObservations': 'No observations added yet',
+  
+  // School Screen
+  'family.school.title': 'School Connection',
+  'family.school.schoolName': 'School Name',
+  'family.school.teacherName': 'Responsible Teacher',
+  'family.school.sendReport': 'Send school report',
+  'family.school.observations': 'Teacher observations',
+  'family.school.comingSoon': 'Coming soon: full school integration',
+  'family.school.save': 'Save information',
+  
+  // Achievements Screen
+  'family.achievements.title': 'Achievements',
+  'family.achievements.share': 'Share Achievement',
+  'family.achievements.weekHistory': 'Weekly history',
+  'family.achievements.noAchievements': 'Keep practicing to unlock achievements!',
+  'family.achievements.oneWeek': '1 week of complete routines!',
+  'family.achievements.twoWeeks': '2 weeks of constant progress!',
+  'family.achievements.oneMonth': '1 month of dedication!',
+  'family.achievements.perfectDay': 'Perfect day - 100% routines!',
 };

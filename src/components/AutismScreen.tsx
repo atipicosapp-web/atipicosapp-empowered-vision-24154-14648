@@ -345,7 +345,10 @@ const AutismScreen = ({ onNavigate, textSize, voiceSpeed, userName }: AutismScre
                   Acesse ferramentas para familiares
                 </p>
                 <Button
-                  onClick={() => speak("Área da família")}
+                  onClick={() => {
+                    speak("Área da família");
+                    onNavigate('family-area');
+                  }}
                   className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-lg"
                 >
                   Acessar

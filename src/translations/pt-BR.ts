@@ -220,4 +220,73 @@ export default {
   'cart.total': 'Total',
   'cart.remove': 'Remover',
   'cart.quantity': 'Quantidade',
+  
+  // Family Area
+  'family.title': 'Progresso e Família 💜',
+  'family.subtitle': 'Visualize o desenvolvimento, configure metas e compartilhe conquistas.',
+  'family.back': 'Voltar',
+  
+  // Family Menu
+  'family.menu.progress': '📊 Progresso Geral',
+  'family.menu.routines': '⚙️ Rotinas e Metas',
+  'family.menu.reports': '🧠 Voz IA e Relatórios',
+  'family.menu.school': '🏫 Conexão com Escola',
+  'family.menu.achievements': '🏅 Conquistas',
+  
+  // Progress Screen
+  'family.progress.title': 'Progresso Geral',
+  'family.progress.communication': 'Comunicação (PECs)',
+  'family.progress.emotions': 'Emoções',
+  'family.progress.routine': 'Rotina Visual',
+  'family.progress.teacher': 'Professora IA',
+  'family.progress.total': 'Evolução Total',
+  'family.progress.downloadPDF': 'Baixar Relatório em PDF',
+  'family.progress.share': 'Compartilhar com Terapeuta / Escola',
+  'family.progress.listenReport': 'Ouvir relatório',
+  
+  // Routines Screen
+  'family.routines.title': 'Rotinas e Metas',
+  'family.routines.add': 'Adicionar nova rotina',
+  'family.routines.name': 'Nome da rotina',
+  'family.routines.type': 'Tipo',
+  'family.routines.time': 'Horário',
+  'family.routines.completionRate': 'Taxa de conclusão',
+  'family.routines.save': 'Salvar',
+  'family.routines.cancel': 'Cancelar',
+  'family.routines.delete': 'Excluir',
+  'family.routines.completed': 'Rotina concluída com sucesso!',
+  'family.routines.types.hygiene': 'Higiene',
+  'family.routines.types.food': 'Alimentação',
+  'family.routines.types.school': 'Escola',
+  'family.routines.types.communication': 'Comunicação',
+  'family.routines.types.exercise': 'Exercício',
+  'family.routines.types.leisure': 'Lazer',
+  
+  // Reports Screen
+  'family.reports.title': 'Voz IA e Relatórios',
+  'family.reports.listenSummary': 'Ouvir resumo do dia',
+  'family.reports.generatePDF': 'Gerar PDF com voz narrada',
+  'family.reports.sendToTherapist': 'Enviar Relatório para Terapeuta',
+  'family.reports.observations': 'Observações da família',
+  'family.reports.addObservation': 'Adicionar observação',
+  'family.reports.noObservations': 'Nenhuma observação adicionada ainda',
+  
+  // School Screen
+  'family.school.title': 'Conexão com Escola',
+  'family.school.schoolName': 'Nome da Escola',
+  'family.school.teacherName': 'Professor Responsável',
+  'family.school.sendReport': 'Enviar relatório escolar',
+  'family.school.observations': 'Observações do professor',
+  'family.school.comingSoon': 'Em breve: integração completa com escolas',
+  'family.school.save': 'Salvar informações',
+  
+  // Achievements Screen
+  'family.achievements.title': 'Conquistas',
+  'family.achievements.share': 'Compartilhar Conquista',
+  'family.achievements.weekHistory': 'Histórico semanal',
+  'family.achievements.noAchievements': 'Continue praticando para desbloquear conquistas!',
+  'family.achievements.oneWeek': '1 semana completa de rotinas!',
+  'family.achievements.twoWeeks': '2 semanas de progresso constante!',
+  'family.achievements.oneMonth': '1 mês de dedicação!',
+  'family.achievements.perfectDay': 'Dia perfeito - 100% das rotinas!',
 };

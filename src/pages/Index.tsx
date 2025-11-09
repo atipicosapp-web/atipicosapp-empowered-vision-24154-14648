@@ -15,6 +15,12 @@ import FonoaudiologaScreen from '@/components/FonoaudiologaScreen';
 import MundoAtipicosScreen from '@/components/MundoAtipicosScreen';
 import ShopScreen from '@/components/ShopScreen';
 import ProductDetailScreen from '@/components/ProductDetailScreen';
+import FamilyAreaScreen from '@/components/FamilyAreaScreen';
+import FamilyProgressScreen from '@/components/FamilyProgressScreen';
+import FamilyRoutinesScreen from '@/components/FamilyRoutinesScreen';
+import FamilyReportsScreen from '@/components/FamilyReportsScreen';
+import FamilySchoolScreen from '@/components/FamilySchoolScreen';
+import FamilyAchievementsScreen from '@/components/FamilyAchievementsScreen';
 import { ShopifyProduct } from '@/lib/shopify';
 
 interface UserData {
@@ -169,6 +175,60 @@ const Index = () => {
           onNavigate={handleNavigation}
           textSize={textSize}
           voiceSpeed={voiceSpeed}
+        />
+      )}
+
+      {currentPage === 'family-area' && (
+        <FamilyAreaScreen 
+          onNavigate={handleNavigation}
+          textSize={textSize}
+          voiceSpeed={voiceSpeed}
+          userName={userData?.name}
+        />
+      )}
+
+      {currentPage === 'family-progress' && (
+        <FamilyProgressScreen 
+          onNavigate={handleNavigation}
+          textSize={textSize}
+          voiceSpeed={voiceSpeed}
+          userName={userData?.name}
+        />
+      )}
+
+      {currentPage === 'family-routines' && (
+        <FamilyRoutinesScreen 
+          onNavigate={handleNavigation}
+          textSize={textSize}
+          voiceSpeed={voiceSpeed}
+          userName={userData?.name}
+        />
+      )}
+
+      {currentPage === 'family-reports' && (
+        <FamilyReportsScreen 
+          onNavigate={handleNavigation}
+          textSize={textSize}
+          voiceSpeed={voiceSpeed}
+          userName={userData?.name}
+        />
+      )}
+
+      {currentPage === 'family-school' && (
+        <FamilySchoolScreen 
+          onNavigate={handleNavigation}
+          textSize={textSize}
+          voiceSpeed={voiceSpeed}
+          userName={userData?.name}
+        />
+      )}
+
+      {currentPage === 'family-achievements' && (
+        <FamilyAchievementsScreen 
+          onNavigate={handleNavigation}
+          textSize={textSize}
+          voiceSpeed={voiceSpeed}
+          userName={userData?.name}
         />
       )}
     </div>
