@@ -56,7 +56,7 @@ const CursosScreen = ({ onNavigate, textSize, voiceSpeed }: CursosScreenProps) =
       {/* Header */}
       <header className="p-4 sm:p-6 lg:p-8 border-b-2 border-green-300/50 flex items-center">
         <Button
-          onClick={() => onNavigate('autism')}
+          onClick={() => onNavigate('home')}
           onMouseEnter={() => speak("Voltar")}
           className="bg-green-500/70 hover:bg-green-500 text-white p-2 sm:p-3 rounded-lg mr-3 sm:mr-4 border border-green-400/50"
         >

@@ -56,7 +56,7 @@ const ComunidadeScreen = ({ onNavigate, textSize, voiceSpeed }: ComunidadeScreen
       {/* Header */}
       <header className="p-4 sm:p-6 lg:p-8 border-b-2 border-blue-300/50 flex items-center">
         <Button
-          onClick={() => onNavigate('autism')}
+          onClick={() => onNavigate('home')}
           onMouseEnter={() => speak("Voltar")}
           className="bg-blue-500/70 hover:bg-blue-500 text-white p-2 sm:p-3 rounded-lg mr-3 sm:mr-4 border border-blue-400/50"
         >

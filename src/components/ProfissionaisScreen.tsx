@@ -56,7 +56,7 @@ const ProfissionaisScreen = ({ onNavigate, textSize, voiceSpeed }: Profissionais
       {/* Header */}
       <header className="p-4 sm:p-6 lg:p-8 border-b-2 border-purple-300/50 flex items-center">
         <Button
-          onClick={() => onNavigate('autism')}
+          onClick={() => onNavigate('home')}
           onMouseEnter={() => speak("Voltar")}
           className="bg-purple-500/70 hover:bg-purple-500 text-white p-2 sm:p-3 rounded-lg mr-3 sm:mr-4 border border-purple-400/50"
         >
