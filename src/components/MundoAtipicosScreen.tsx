@@ -388,11 +388,11 @@ const AvatarCustomization: React.FC<{
   onBack: () => void;
   speak: (text: string) => void;
 }> = ({ progress, setProgress, onBack, speak }) => {
-  const skins = ['👤', '👨', '👩', '🧒', '👧', '👦'];
-  const hairs = ['🎩', '👒', '🧢', '👑', '🎓', '💇'];
-  const clothes = ['👕', '👔', '👗', '🦺', '👘', '🥼'];
-  const accessories = ['🎒', '🎸', '🎮', '📚', '⚽', '🎨'];
-  const expressions = ['😊', '😄', '🤗', '😎', '🤔', '😴'];
+  const skins = ['👤', '👨', '👩', '🧒', '👧', '👦', '👶', '🧑', '👴', '👵', '🧔', '👨‍🦰', '👩‍🦰', '👨‍🦱', '👩‍🦱'];
+  const hairs = ['🎩', '👒', '🧢', '👑', '🎓', '💇', '🎀', '👸', '🤴', '🧕', '👳', '💆', '💅', '🦸', '🧙'];
+  const clothes = ['👕', '👔', '👗', '🦺', '👘', '🥼', '🥻', '👚', '🩱', '🩳', '👖', '🧥', '🧤', '🧣', '🎽'];
+  const accessories = ['🎒', '🎸', '🎮', '📚', '⚽', '🎨', '🎪', '🎭', '🎬', '🎤', '🎧', '🎹', '🎺', '🎻', '🥁'];
+  const expressions = ['😊', '😄', '🤗', '😎', '🤔', '😴', '🥳', '😇', '🤩', '😋', '😌', '🤓', '🥰', '😍', '🤪'];
 
   const updateAvatar = (key: keyof AvatarConfig, value: string) => {
     console.log('Updating avatar:', key, value);
@@ -528,11 +528,14 @@ const SpaceEnvironment: React.FC<{
   speak: (text: string) => void;
 }> = ({ progress, setProgress, onBack, speak }) => {
   const environments = [
-    { id: 'casa', name: 'Casa', emoji: '🏠', sound: 'Som de casa', items: ['🛋️', '🪑', '🚪', '🪟', '🛏️', '💡'] },
-    { id: 'escola', name: 'Escola', emoji: '🏫', sound: 'Sino da escola', items: ['📚', '✏️', '📐', '🎒', '🖊️', '📝'] },
-    { id: 'parque', name: 'Parque', emoji: '🌳', sound: 'Pássaros cantando', items: ['🌳', '🌸', '🦋', '🐦', '☀️', '🌈'] },
-    { id: 'praia', name: 'Praia', emoji: '🏖️', sound: 'Ondas do mar', items: ['🌊', '🏄', '🐚', '⛱️', '🦀', '🐠'] },
-    { id: 'clinica', name: 'Clínica', emoji: '🏥', sound: 'Ambiente calmo', items: ['🩺', '💊', '🧸', '🎨', '📖', '🧩'] }
+    { id: 'casa', name: 'Casa', emoji: '🏠', sound: 'Som de casa', items: ['🛋️', '🪑', '🚪', '🪟', '🛏️', '💡', '🖼️', '🧺', '🍽️'] },
+    { id: 'escola', name: 'Escola', emoji: '🏫', sound: 'Sino da escola', items: ['📚', '✏️', '📐', '🎒', '🖊️', '📝', '🖍️', '📖', '🧮'] },
+    { id: 'parque', name: 'Parque', emoji: '🌳', sound: 'Pássaros cantando', items: ['🌳', '🌸', '🦋', '🐦', '☀️', '🌈', '🎈', '🛝', '⚽'] },
+    { id: 'praia', name: 'Praia', emoji: '🏖️', sound: 'Ondas do mar', items: ['🌊', '🏄', '🐚', '⛱️', '🦀', '🐠', '🏖️', '⛵', '🥽'] },
+    { id: 'clinica', name: 'Clínica', emoji: '🏥', sound: 'Ambiente calmo', items: ['🩺', '💊', '🧸', '🎨', '📖', '🧩', '🪀', '🎯', '🎲'] },
+    { id: 'mercado', name: 'Mercado', emoji: '🛒', sound: 'Ambiente movimentado', items: ['🍎', '🍌', '🥕', '🍞', '🥛', '🧃', '🍪', '🧀', '🥚'] },
+    { id: 'zoologico', name: 'Zoológico', emoji: '🦁', sound: 'Animais', items: ['🦁', '🐘', '🦒', '🐵', '🦓', '🐻', '🦘', '🦜', '🐧'] },
+    { id: 'fazenda', name: 'Fazenda', emoji: '🚜', sound: 'Sons rurais', items: ['🐄', '🐷', '🐔', '🐴', '🐑', '🌾', '🚜', '🌻', '🥕'] }
   ];
 
   const currentEnv = environments.find(e => e.id === progress.environment) || environments[0];
@@ -590,9 +593,9 @@ const SpaceEnvironment: React.FC<{
           </div>
         </Card>
 
-        {/* Environment Selection */}
+          {/* Environment Selection */}
         <h3 className="font-bold text-blue-700 mb-3">Escolher Ambiente:</h3>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-4 gap-3">
           {environments.map(env => (
             <Button
               key={env.id}
@@ -628,7 +631,7 @@ const LearningPhases: React.FC<{
       title: 'Fase 1: Comunicação Básica',
       icon: '💬',
       description: 'Aprenda PECs de objetos e ações',
-      missions: ['Ache o som certo', 'Monte a frase'],
+      missions: ['Ache o som certo', 'Monte a frase', 'Identifique objetos'],
       color: 'from-blue-400 to-blue-600'
     },
     {
@@ -636,7 +639,7 @@ const LearningPhases: React.FC<{
       title: 'Fase 2: Emoções e Sentimentos',
       icon: '😊',
       description: 'Aprenda sobre expressões e emoções',
-      missions: ['Reconheça emoções', 'Combine expressões'],
+      missions: ['Reconheça emoções', 'Combine expressões', 'Como você se sente?'],
       color: 'from-yellow-400 to-orange-600'
     },
     {
@@ -644,7 +647,7 @@ const LearningPhases: React.FC<{
       title: 'Fase 3: Sons e Fala',
       icon: '🎤',
       description: 'Treinos de pronúncia e sílabas',
-      missions: ['Repita as sílabas', 'Forme palavras'],
+      missions: ['Repita as sílabas', 'Forme palavras', 'Cante junto'],
       color: 'from-purple-400 to-pink-600'
     },
     {
@@ -652,7 +655,7 @@ const LearningPhases: React.FC<{
       title: 'Fase 4: Rotina e Organização',
       icon: '⏰',
       description: 'Aprenda sobre tempo e sequências',
-      missions: ['Monte sua rotina', 'Organize o dia'],
+      missions: ['Monte sua rotina', 'Organize o dia', 'Aprenda as horas'],
       color: 'from-green-400 to-teal-600'
     },
     {
@@ -660,8 +663,32 @@ const LearningPhases: React.FC<{
       title: 'Fase 5: Convivência',
       icon: '🤝',
       description: 'Amizade, respeito e empatia',
-      missions: ['Ajude o amigo', 'Compartilhe'],
+      missions: ['Ajude o amigo', 'Compartilhe', 'Seja gentil'],
       color: 'from-red-400 to-pink-600'
+    },
+    {
+      id: 'fase6',
+      title: 'Fase 6: Números e Contagem',
+      icon: '🔢',
+      description: 'Aprenda matemática básica',
+      missions: ['Conte os objetos', 'Some e subtraia', 'Formas geométricas'],
+      color: 'from-indigo-400 to-purple-600'
+    },
+    {
+      id: 'fase7',
+      title: 'Fase 7: Natureza e Animais',
+      icon: '🦁',
+      description: 'Conheça o mundo natural',
+      missions: ['Aprenda sobre animais', 'Plantas e flores', 'O clima'],
+      color: 'from-green-400 to-lime-600'
+    },
+    {
+      id: 'fase8',
+      title: 'Fase 8: Alimentos e Nutrição',
+      icon: '🍎',
+      description: 'Alimentação saudável',
+      missions: ['Escolha frutas', 'Aprenda sobre comida', 'Monte seu prato'],
+      color: 'from-orange-400 to-amber-600'
     }
   ];
 
@@ -678,26 +705,19 @@ const LearningPhases: React.FC<{
         <div className="space-y-4">
           {phases.map((phase, index) => {
             const isCompleted = progress.completedPhases.includes(phase.id);
-            const isLocked = index > 0 && !progress.completedPhases.includes(phases[index - 1].id);
 
             return (
               <Card
                 key={phase.id}
-                className={`p-5 bg-gradient-to-r ${phase.color} text-white ${
-                  isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:scale-102 active:scale-98 transition-all cursor-pointer'
-                }`}
+                className={`p-5 bg-gradient-to-r ${phase.color} text-white hover:scale-102 active:scale-98 transition-all cursor-pointer`}
                 onClick={() => {
-                  if (!isLocked) {
-                    console.log('Phase clicked:', phase.id, 'Completed:', isCompleted);
-                    setTimeout(() => speak(phase.title), 100);
-                    if (!isCompleted) {
-                      completePhase(phase.id);
-                    } else {
-                      toast.info('Fase já completada! ✨');
-                    }
+                  console.log('Phase clicked:', phase.id, 'Completed:', isCompleted);
+                  setTimeout(() => speak(phase.title), 100);
+                  if (!isCompleted) {
+                    completePhase(phase.id);
                   } else {
-                    toast.warning('Complete a fase anterior primeiro! 🔒');
-                    setTimeout(() => speak('Complete a fase anterior primeiro!'), 100);
+                    toast.info('Você pode jogar novamente! 🎮');
+                    setTimeout(() => speak('Você pode jogar novamente!'), 100);
                   }
                 }}
               >
@@ -707,7 +727,6 @@ const LearningPhases: React.FC<{
                     <h3 className="font-bold text-lg mb-1 flex items-center gap-2">
                       {phase.title}
                       {isCompleted && <span className="text-2xl">✅</span>}
-                      {isLocked && <span className="text-2xl">🔒</span>}
                     </h3>
                     <p className="text-sm opacity-90 mb-2">{phase.description}</p>
                     <div className="space-y-1">
@@ -736,57 +755,599 @@ const GamesAndChallenges: React.FC<{
   addCoins: (amount: number) => void;
   addPieces: (amount: number) => void;
 }> = ({ progress, onBack, speak, addCoins, addPieces }) => {
+  const [currentGame, setCurrentGame] = useState<string | null>(null);
+  const [gameState, setGameState] = useState<any>({});
+
   const games = [
-    { id: 'memory', title: 'PEC Memory', icon: '🧠', description: 'Jogo da memória com pictogramas' },
-    { id: 'words', title: 'Monte a Palavra', icon: '🔤', description: 'Arraste letras para formar palavras' },
-    { id: 'explorer', title: 'Explorador 3D', icon: '🔍', description: 'Descubra palavras e sons' },
-    { id: 'sounds', title: 'Som Misterioso', icon: '🔊', description: 'Ouça e escolha o objeto certo' },
-    { id: 'colors', title: 'Cores e Formas', icon: '🎨', description: 'Toque no item da cor pedida' }
+    { id: 'memory', title: 'Jogo da Memória', icon: '🧠', description: 'Encontre os pares de emojis', color: 'from-blue-400 to-cyan-500' },
+    { id: 'colors', title: 'Cores e Formas', icon: '🎨', description: 'Encontre a cor certa', color: 'from-pink-400 to-rose-500' },
+    { id: 'sounds', title: 'Som Misterioso', icon: '🔊', description: 'Adivinhe o som', color: 'from-purple-400 to-indigo-500' },
+    { id: 'numbers', title: 'Contando Juntos', icon: '🔢', description: 'Aprenda números', color: 'from-green-400 to-emerald-500' },
+    { id: 'emotions', title: 'Quiz de Emoções', icon: '😊', description: 'Reconheça sentimentos', color: 'from-yellow-400 to-amber-500' },
+    { id: 'puzzle', title: 'Quebra-Cabeça', icon: '🧩', description: 'Monte a imagem', color: 'from-red-400 to-orange-500' },
+    { id: 'sequence', title: 'Sequência Lógica', icon: '🎯', description: 'Complete o padrão', color: 'from-teal-400 to-cyan-500' },
+    { id: 'find', title: 'Encontre o Diferente', icon: '🔍', description: 'Qual não combina?', color: 'from-indigo-400 to-blue-500' }
   ];
+
+  if (currentGame) {
+    return (
+      <GamePlayer
+        gameId={currentGame}
+        onBack={() => setCurrentGame(null)}
+        speak={speak}
+        addCoins={addCoins}
+        addPieces={addPieces}
+        gameState={gameState}
+        setGameState={setGameState}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-100 to-red-100 p-4">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <Button onClick={onBack} variant="ghost" size="icon">
             <ArrowLeft className="h-6 w-6" />
           </Button>
-          <h1 className="text-2xl font-bold text-orange-700">Jogos e Desafios</h1>
+          <h1 className="text-2xl font-bold text-orange-700">Jogos e Desafios 🎮</h1>
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {games.map(game => (
             <Card
               key={game.id}
-              className="p-5 bg-white/90 hover:bg-white hover:scale-102 active:scale-98 transition-all cursor-pointer"
+              className={`p-5 bg-gradient-to-br ${game.color} text-white hover:scale-105 active:scale-95 transition-all cursor-pointer`}
               onClick={() => {
-                console.log('Game clicked:', game.id);
-                toast.success(`Iniciando ${game.title}! 🎮`);
-                setTimeout(() => speak(game.title), 100);
-                setTimeout(() => {
-                  addCoins(5);
-                  addPieces(1);
-                }, 500);
+                console.log('Starting game:', game.id);
+                setCurrentGame(game.id);
+                setTimeout(() => speak(`Iniciando ${game.title}`), 100);
               }}
             >
               <div className="flex items-center gap-4">
-                <div className="text-5xl">{game.icon}</div>
+                <div className="text-6xl animate-bounce">{game.icon}</div>
                 <div className="flex-1">
-                  <h3 className="font-bold text-lg text-orange-700">{game.title}</h3>
-                  <p className="text-sm text-gray-600">{game.description}</p>
-                  <div className="flex gap-2 mt-2">
-                    <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">+5 🪙</span>
-                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">+1 🧩</span>
+                  <h3 className="font-bold text-xl mb-1">{game.title}</h3>
+                  <p className="text-sm opacity-90">{game.description}</p>
+                  <div className="flex gap-2 mt-3">
+                    <span className="text-xs bg-white/20 backdrop-blur px-3 py-1 rounded-full">+5 🪙</span>
+                    <span className="text-xs bg-white/20 backdrop-blur px-3 py-1 rounded-full">+1 🧩</span>
                   </div>
                 </div>
-                <Button variant="default" size="sm" onClick={(e) => {
-                  e.stopPropagation();
-                  console.log('Jogar button clicked');
-                }}>
-                  Jogar
+                <Button variant="secondary" size="lg" className="font-bold">
+                  Jogar!
                 </Button>
               </div>
             </Card>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Game Player Component
+const GamePlayer: React.FC<{
+  gameId: string;
+  onBack: () => void;
+  speak: (text: string) => void;
+  addCoins: (amount: number) => void;
+  addPieces: (amount: number) => void;
+  gameState: any;
+  setGameState: (state: any) => void;
+}> = ({ gameId, onBack, speak, addCoins, addPieces, gameState, setGameState }) => {
+  
+  const [score, setScore] = useState(0);
+  const [level, setLevel] = useState(1);
+
+  const finishGame = () => {
+    const coins = Math.max(5, score);
+    const pieces = Math.floor(score / 10) + 1;
+    addCoins(coins);
+    addPieces(pieces);
+    toast.success(`Parabéns! Você ganhou ${coins} moedas e ${pieces} peças! 🎉`);
+    setTimeout(() => speak(`Parabéns! Você completou o jogo!`), 100);
+    setTimeout(() => onBack(), 2000);
+  };
+
+  switch (gameId) {
+    case 'memory':
+      return <MemoryGame onBack={onBack} speak={speak} finishGame={finishGame} score={score} setScore={setScore} />;
+    case 'colors':
+      return <ColorsGame onBack={onBack} speak={speak} finishGame={finishGame} score={score} setScore={setScore} />;
+    case 'sounds':
+      return <SoundsGame onBack={onBack} speak={speak} finishGame={finishGame} score={score} setScore={setScore} />;
+    case 'numbers':
+      return <NumbersGame onBack={onBack} speak={speak} finishGame={finishGame} score={score} setScore={setScore} />;
+    case 'emotions':
+      return <EmotionsGame onBack={onBack} speak={speak} finishGame={finishGame} score={score} setScore={setScore} />;
+    case 'puzzle':
+      return <PuzzleGame onBack={onBack} speak={speak} finishGame={finishGame} score={score} setScore={setScore} />;
+    case 'sequence':
+      return <SequenceGame onBack={onBack} speak={speak} finishGame={finishGame} score={score} setScore={setScore} />;
+    case 'find':
+      return <FindDifferentGame onBack={onBack} speak={speak} finishGame={finishGame} score={score} setScore={setScore} />;
+    default:
+      return null;
+  }
+};
+
+// Memory Game
+const MemoryGame: React.FC<any> = ({ onBack, speak, finishGame, score, setScore }) => {
+  const emojis = ['🍎', '🍌', '🍇', '🍓', '🍉', '🍊', '🥝', '🍒'];
+  const [cards, setCards] = useState<string[]>([]);
+  const [flipped, setFlipped] = useState<number[]>([]);
+  const [matched, setMatched] = useState<number[]>([]);
+
+  useEffect(() => {
+    const shuffled = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+    setCards(shuffled);
+    setTimeout(() => speak('Encontre os pares iguais!'), 300);
+  }, []);
+
+  const handleCardClick = (index: number) => {
+    if (flipped.length === 2 || flipped.includes(index) || matched.includes(index)) return;
+    
+    const newFlipped = [...flipped, index];
+    setFlipped(newFlipped);
+    speak(cards[index]);
+
+    if (newFlipped.length === 2) {
+      if (cards[newFlipped[0]] === cards[newFlipped[1]]) {
+        setMatched([...matched, ...newFlipped]);
+        setScore(score + 10);
+        toast.success('Par encontrado! +10 pontos 🎉');
+        setTimeout(() => speak('Par encontrado!'), 100);
+        setFlipped([]);
+        
+        if (matched.length + 2 === cards.length) {
+          setTimeout(() => finishGame(), 1000);
+        }
+      } else {
+        setTimeout(() => {
+          setFlipped([]);
+          speak('Tente novamente');
+        }, 1000);
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-blue-100 to-purple-100 p-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <Button onClick={onBack} variant="ghost" size="icon">
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-2xl font-bold text-purple-700">Jogo da Memória 🧠</h1>
+          <div className="text-lg font-bold text-purple-700">Pontos: {score}</div>
+        </div>
+
+        <div className="grid grid-cols-4 gap-3">
+          {cards.map((emoji, index) => (
+            <button
+              key={index}
+              onClick={() => handleCardClick(index)}
+              className={`aspect-square text-5xl rounded-xl transition-all duration-300 ${
+                flipped.includes(index) || matched.includes(index)
+                  ? 'bg-white shadow-lg scale-100'
+                  : 'bg-purple-400 hover:bg-purple-500 scale-95 hover:scale-100'
+              }`}
+            >
+              {flipped.includes(index) || matched.includes(index) ? emoji : '❓'}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Colors Game
+const ColorsGame: React.FC<any> = ({ onBack, speak, finishGame, score, setScore }) => {
+  const colors = [
+    { name: 'Vermelho', emoji: '🔴', color: 'bg-red-500' },
+    { name: 'Azul', emoji: '🔵', color: 'bg-blue-500' },
+    { name: 'Verde', emoji: '🟢', color: 'bg-green-500' },
+    { name: 'Amarelo', emoji: '🟡', color: 'bg-yellow-500' },
+    { name: 'Rosa', emoji: '🔴', color: 'bg-pink-500' },
+    { name: 'Roxo', emoji: '🟣', color: 'bg-purple-500' }
+  ];
+
+  const [targetColor, setTargetColor] = useState(colors[0]);
+  const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    startNewRound();
+  }, []);
+
+  const startNewRound = () => {
+    const newColor = colors[Math.floor(Math.random() * colors.length)];
+    setTargetColor(newColor);
+    setTimeout(() => speak(`Encontre o ${newColor.name}`), 300);
+  };
+
+  const handleColorClick = (color: typeof colors[0]) => {
+    if (color.name === targetColor.name) {
+      setScore(score + 10);
+      toast.success(`Correto! +10 pontos 🎨`);
+      speak('Muito bem!');
+      const newRound = round + 1;
+      setRound(newRound);
+      
+      if (newRound >= 10) {
+        setTimeout(() => finishGame(), 1000);
+      } else {
+        setTimeout(() => startNewRound(), 1500);
+      }
+    } else {
+      speak('Tente novamente');
+      toast.error('Ops! Tente de novo');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-pink-100 to-rose-100 p-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <Button onClick={onBack} variant="ghost" size="icon">
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-2xl font-bold text-pink-700">Cores e Formas 🎨</h1>
+          <div className="text-lg font-bold text-pink-700">Pontos: {score}</div>
+        </div>
+
+        <Card className="p-8 mb-6 bg-white text-center">
+          <h2 className="text-3xl font-bold text-gray-700 mb-4">Encontre:</h2>
+          <div className="text-8xl mb-2">{targetColor.emoji}</div>
+          <p className="text-2xl font-bold text-gray-700">{targetColor.name}</p>
+          <p className="text-sm text-gray-500 mt-2">Rodada {round + 1} de 10</p>
+        </Card>
+
+        <div className="grid grid-cols-3 gap-4">
+          {colors.map((color, index) => (
+            <button
+              key={index}
+              onClick={() => handleColorClick(color)}
+              className={`${color.color} h-24 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Sounds Game
+const SoundsGame: React.FC<any> = ({ onBack, speak, finishGame, score, setScore }) => {
+  const sounds = [
+    { name: 'Cachorro', emoji: '🐶', sound: 'Au au' },
+    { name: 'Gato', emoji: '🐱', sound: 'Miau' },
+    { name: 'Vaca', emoji: '🐄', sound: 'Muuu' },
+    { name: 'Pato', emoji: '🦆', sound: 'Quack' },
+    { name: 'Leão', emoji: '🦁', sound: 'Roar' },
+    { name: 'Passarinho', emoji: '🐦', sound: 'Piu piu' }
+  ];
+
+  const [targetSound, setTargetSound] = useState(sounds[0]);
+  const [options, setOptions] = useState<typeof sounds>([]);
+  const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    startNewRound();
+  }, []);
+
+  const startNewRound = () => {
+    const target = sounds[Math.floor(Math.random() * sounds.length)];
+    const wrongOptions = sounds.filter(s => s.name !== target.name);
+    const shuffled = [target, ...wrongOptions.slice(0, 2)].sort(() => Math.random() - 0.5);
+    
+    setTargetSound(target);
+    setOptions(shuffled);
+    setTimeout(() => speak(`Que animal faz ${target.sound}?`), 300);
+  };
+
+  const handleSoundClick = (sound: typeof sounds[0]) => {
+    if (sound.name === targetSound.name) {
+      setScore(score + 10);
+      toast.success(`Correto! +10 pontos 🔊`);
+      speak(`Muito bem! É o ${sound.name}!`);
+      const newRound = round + 1;
+      setRound(newRound);
+      
+      if (newRound >= 10) {
+        setTimeout(() => finishGame(), 1000);
+      } else {
+        setTimeout(() => startNewRound(), 2000);
+      }
+    } else {
+      speak('Tente novamente');
+      toast.error('Ops! Tente de novo');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-purple-100 to-indigo-100 p-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <Button onClick={onBack} variant="ghost" size="icon">
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-2xl font-bold text-purple-700">Som Misterioso 🔊</h1>
+          <div className="text-lg font-bold text-purple-700">Pontos: {score}</div>
+        </div>
+
+        <Card className="p-8 mb-6 bg-white text-center">
+          <h2 className="text-2xl font-bold text-gray-700 mb-4">Que animal faz:</h2>
+          <div className="text-6xl font-bold text-purple-600 mb-4">{targetSound.sound}?</div>
+          <Button
+            variant="outline"
+            onClick={() => speak(`Que animal faz ${targetSound.sound}?`)}
+          >
+            <Volume2 className="w-4 h-4 mr-2" />
+            Ouvir novamente
+          </Button>
+          <p className="text-sm text-gray-500 mt-4">Rodada {round + 1} de 10</p>
+        </Card>
+
+        <div className="grid grid-cols-3 gap-4">
+          {options.map((sound, index) => (
+            <button
+              key={index}
+              onClick={() => handleSoundClick(sound)}
+              className="bg-white p-6 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg"
+            >
+              <div className="text-6xl mb-2">{sound.emoji}</div>
+              <p className="text-sm font-semibold text-gray-700">{sound.name}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Numbers Game
+const NumbersGame: React.FC<any> = ({ onBack, speak, finishGame, score, setScore }) => {
+  const [targetNumber, setTargetNumber] = useState(1);
+  const [options, setOptions] = useState<number[]>([]);
+  const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    startNewRound();
+  }, []);
+
+  const startNewRound = () => {
+    const target = Math.floor(Math.random() * 10) + 1;
+    const wrong1 = (target + Math.floor(Math.random() * 3) + 1) % 10 + 1;
+    const wrong2 = (target + Math.floor(Math.random() * 5) + 5) % 10 + 1;
+    const shuffled = [target, wrong1, wrong2].sort(() => Math.random() - 0.5);
+    
+    setTargetNumber(target);
+    setOptions(shuffled);
+    setTimeout(() => speak(`Encontre o número ${target}`), 300);
+  };
+
+  const handleNumberClick = (num: number) => {
+    if (num === targetNumber) {
+      setScore(score + 10);
+      toast.success(`Correto! +10 pontos 🔢`);
+      speak('Muito bem!');
+      const newRound = round + 1;
+      setRound(newRound);
+      
+      if (newRound >= 10) {
+        setTimeout(() => finishGame(), 1000);
+      } else {
+        setTimeout(() => startNewRound(), 1500);
+      }
+    } else {
+      speak('Tente novamente');
+      toast.error('Ops! Tente de novo');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-green-100 to-emerald-100 p-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <Button onClick={onBack} variant="ghost" size="icon">
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-2xl font-bold text-green-700">Contando Juntos 🔢</h1>
+          <div className="text-lg font-bold text-green-700">Pontos: {score}</div>
+        </div>
+
+        <Card className="p-8 mb-6 bg-white text-center">
+          <h2 className="text-2xl font-bold text-gray-700 mb-4">Encontre o número:</h2>
+          <div className="text-9xl font-bold text-green-600 mb-4">{targetNumber}</div>
+          <p className="text-sm text-gray-500">Rodada {round + 1} de 10</p>
+        </Card>
+
+        <div className="grid grid-cols-3 gap-4">
+          {options.map((num, index) => (
+            <button
+              key={index}
+              onClick={() => handleNumberClick(num)}
+              className="bg-white p-8 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg"
+            >
+              <div className="text-7xl font-bold text-green-600">{num}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Emotions Game
+const EmotionsGame: React.FC<any> = ({ onBack, speak, finishGame, score, setScore }) => {
+  const emotions = [
+    { name: 'Feliz', emoji: '😊', description: 'Sorrindo' },
+    { name: 'Triste', emoji: '😢', description: 'Chorando' },
+    { name: 'Bravo', emoji: '😠', description: 'Com raiva' },
+    { name: 'Surpreso', emoji: '😮', description: 'Admirado' },
+    { name: 'Com medo', emoji: '😨', description: 'Assustado' },
+    { name: 'Pensativo', emoji: '🤔', description: 'Pensando' }
+  ];
+
+  const [targetEmotion, setTargetEmotion] = useState(emotions[0]);
+  const [options, setOptions] = useState<typeof emotions>([]);
+  const [round, setRound] = useState(0);
+
+  useEffect(() => {
+    startNewRound();
+  }, []);
+
+  const startNewRound = () => {
+    const target = emotions[Math.floor(Math.random() * emotions.length)];
+    const wrongOptions = emotions.filter(e => e.name !== target.name);
+    const shuffled = [target, ...wrongOptions.slice(0, 2)].sort(() => Math.random() - 0.5);
+    
+    setTargetEmotion(target);
+    setOptions(shuffled);
+    setTimeout(() => speak(`Como está ${target.description}?`), 300);
+  };
+
+  const handleEmotionClick = (emotion: typeof emotions[0]) => {
+    if (emotion.name === targetEmotion.name) {
+      setScore(score + 10);
+      toast.success(`Correto! +10 pontos 😊`);
+      speak(`Muito bem! Está ${emotion.name}!`);
+      const newRound = round + 1;
+      setRound(newRound);
+      
+      if (newRound >= 10) {
+        setTimeout(() => finishGame(), 1000);
+      } else {
+        setTimeout(() => startNewRound(), 2000);
+      }
+    } else {
+      speak('Tente novamente');
+      toast.error('Ops! Tente de novo');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-yellow-100 to-amber-100 p-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <Button onClick={onBack} variant="ghost" size="icon">
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-2xl font-bold text-yellow-700">Quiz de Emoções 😊</h1>
+          <div className="text-lg font-bold text-yellow-700">Pontos: {score}</div>
+        </div>
+
+        <Card className="p-8 mb-6 bg-white text-center">
+          <h2 className="text-2xl font-bold text-gray-700 mb-4">Como está {targetEmotion.description}?</h2>
+          <p className="text-sm text-gray-500">Rodada {round + 1} de 10</p>
+        </Card>
+
+        <div className="grid grid-cols-3 gap-4">
+          {options.map((emotion, index) => (
+            <button
+              key={index}
+              onClick={() => handleEmotionClick(emotion)}
+              className="bg-white p-6 rounded-xl hover:scale-110 active:scale-95 transition-all shadow-lg"
+            >
+              <div className="text-7xl mb-2">{emotion.emoji}</div>
+              <p className="text-sm font-semibold text-gray-700">{emotion.name}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Placeholder games (to be expanded)
+const PuzzleGame: React.FC<any> = ({ onBack, speak, finishGame, score, setScore }) => {
+  const pieces = ['🧩', '🎨', '🎭', '🎪', '🎡', '🎢', '🎠', '🎪', '🎨'];
+  
+  useEffect(() => {
+    speak('Monte o quebra-cabeça!');
+    setTimeout(() => {
+      setScore(50);
+      finishGame();
+    }, 3000);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-red-100 to-orange-100 p-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <Button onClick={onBack} variant="ghost" size="icon">
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-2xl font-bold text-red-700">Quebra-Cabeça 🧩</h1>
+          <div className="text-lg font-bold text-red-700">Pontos: {score}</div>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          {pieces.map((piece, i) => (
+            <div key={i} className="bg-white p-8 rounded-xl text-6xl text-center hover:scale-110 transition-all cursor-pointer">
+              {piece}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const SequenceGame: React.FC<any> = ({ onBack, speak, finishGame, score, setScore }) => {
+  useEffect(() => {
+    speak('Complete a sequência!');
+    setTimeout(() => {
+      setScore(50);
+      finishGame();
+    }, 3000);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-teal-100 to-cyan-100 p-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <Button onClick={onBack} variant="ghost" size="icon">
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-2xl font-bold text-teal-700">Sequência Lógica 🎯</h1>
+          <div className="text-lg font-bold text-teal-700">Pontos: {score}</div>
+        </div>
+        <Card className="p-8 text-center">
+          <div className="text-8xl space-x-4">
+            🔴 🔵 🔴 🔵 <span className="text-gray-300">?</span>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+const FindDifferentGame: React.FC<any> = ({ onBack, speak, finishGame, score, setScore }) => {
+  useEffect(() => {
+    speak('Encontre o diferente!');
+    setTimeout(() => {
+      setScore(50);
+      finishGame();
+    }, 3000);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-indigo-100 to-blue-100 p-4">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <Button onClick={onBack} variant="ghost" size="icon">
+            <ArrowLeft className="h-6 w-6" />
+          </Button>
+          <h1 className="text-2xl font-bold text-indigo-700">Encontre o Diferente 🔍</h1>
+          <div className="text-lg font-bold text-indigo-700">Pontos: {score}</div>
+        </div>
+        <div className="grid grid-cols-3 gap-4">
+          {['🍎', '🍎', '🍌', '🍎', '🍎', '🍎'].map((fruit, i) => (
+            <button key={i} className="bg-white p-8 rounded-xl text-8xl hover:scale-110 transition-all">
+              {fruit}
+            </button>
           ))}
         </div>
       </div>
@@ -807,7 +1368,13 @@ const RewardsAndAchievements: React.FC<{
     { id: 'plant', name: 'Planta Decorativa', icon: '🌱', price: 8, type: 'decor' },
     { id: 'toy', name: 'Brinquedo Divertido', icon: '🧸', price: 12, type: 'decor' },
     { id: 'pet', name: 'Pet Virtual', icon: '🐶', price: 20, type: 'pet' },
-    { id: 'sound', name: 'Som de Risada', icon: '😄', price: 5, type: 'sound' }
+    { id: 'sound', name: 'Som de Risada', icon: '😄', price: 5, type: 'sound' },
+    { id: 'crown', name: 'Coroa Real', icon: '👑', price: 25, type: 'avatar' },
+    { id: 'rainbow', name: 'Arco-íris', icon: '🌈', price: 30, type: 'decor' },
+    { id: 'star', name: 'Estrela Brilhante', icon: '⭐', price: 15, type: 'decor' },
+    { id: 'unicorn', name: 'Unicórnio', icon: '🦄', price: 35, type: 'pet' },
+    { id: 'guitar', name: 'Guitarra', icon: '🎸', price: 20, type: 'avatar' },
+    { id: 'paint', name: 'Kit de Pintura', icon: '🎨', price: 18, type: 'avatar' }
   ];
 
   const buyReward = (reward: typeof rewards[0]) => {
