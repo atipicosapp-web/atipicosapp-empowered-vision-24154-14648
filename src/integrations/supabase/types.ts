@@ -14,6 +14,177 @@ export type Database = {
   }
   public: {
     Tables: {
+      family_achievements: {
+        Row: {
+          created_at: string | null
+          date: string | null
+          description: string
+          id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          date?: string | null
+          description: string
+          id?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          date?: string | null
+          description?: string
+          id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      family_progress: {
+        Row: {
+          ai_teacher_progress: number | null
+          communication_progress: number | null
+          created_at: string | null
+          date: string | null
+          emotions_progress: number | null
+          id: string
+          routine_progress: number | null
+          total_percentage: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_teacher_progress?: number | null
+          communication_progress?: number | null
+          created_at?: string | null
+          date?: string | null
+          emotions_progress?: number | null
+          id?: string
+          routine_progress?: number | null
+          total_percentage?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_teacher_progress?: number | null
+          communication_progress?: number | null
+          created_at?: string | null
+          date?: string | null
+          emotions_progress?: number | null
+          id?: string
+          routine_progress?: number | null
+          total_percentage?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      family_reports: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          observations: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          observations?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          observations?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      family_routines: {
+        Row: {
+          completed: boolean | null
+          created_at: string | null
+          id: string
+          name: string
+          time: string
+          type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          created_at?: string | null
+          id?: string
+          name: string
+          time: string
+          type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          time?: string
+          type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mundo_atipicos_data: {
+        Row: {
+          coins: number | null
+          created_at: string | null
+          game_scores: Json | null
+          id: string
+          pieces: number | null
+          selected_accessories: number | null
+          selected_clothes: number | null
+          selected_expression: number | null
+          selected_hair: number | null
+          selected_skin: number | null
+          unlocked_rewards: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          coins?: number | null
+          created_at?: string | null
+          game_scores?: Json | null
+          id?: string
+          pieces?: number | null
+          selected_accessories?: number | null
+          selected_clothes?: number | null
+          selected_expression?: number | null
+          selected_hair?: number | null
+          selected_skin?: number | null
+          unlocked_rewards?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          coins?: number | null
+          created_at?: string | null
+          game_scores?: Json | null
+          id?: string
+          pieces?: number | null
+          selected_accessories?: number | null
+          selected_clothes?: number | null
+          selected_expression?: number | null
+          selected_hair?: number | null
+          selected_skin?: number | null
+          unlocked_rewards?: Json | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -29,6 +200,36 @@ export type Database = {
           created_at?: string
           id?: string
           trial_ends_at?: string
+        }
+        Relationships: []
+      }
+      school_connection: {
+        Row: {
+          created_at: string | null
+          id: string
+          observations: string | null
+          school_name: string | null
+          teacher_name: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          observations?: string | null
+          school_name?: string | null
+          teacher_name?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          observations?: string | null
+          school_name?: string | null
+          teacher_name?: string | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
