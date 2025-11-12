@@ -5,6 +5,8 @@ import { Card } from './ui/card';
 import { Progress } from './ui/progress';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface MundoAtipicosScreenProps {
   onBack: () => void;
@@ -31,29 +33,97 @@ interface AvatarConfig {
 
 const MundoAtipicosScreen: React.FC<MundoAtipicosScreenProps> = ({ onBack }) => {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [currentView, setCurrentView] = useState<'main' | 'avatar' | 'space' | 'phases' | 'games' | 'rewards'>('main');
-  const [progress, setProgress] = useState<UserProgress>(() => {
-    const saved = localStorage.getItem('mundoAtipicos');
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    return {
-      name: 'Visitante',
-      level: 1,
-      coins: 0,
-      pieces: 0,
-      completedPhases: [],
-      avatarConfig: {
-        skin: '👤',
-        hair: '🎩',
-        clothes: '👕',
-        accessory: '🎒',
-        expression: '😊'
-      },
-      environment: 'casa',
-      isDarkMode: false
-    };
+  const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState<UserProgress>({
+    name: 'Visitante',
+    level: 1,
+    coins: 0,
+    pieces: 0,
+    completedPhases: [],
+    avatarConfig: {
+      skin: '👤',
+      hair: '🎩',
+      clothes: '👕',
+      accessory: '🎒',
+      expression: '😊'
+    },
+    environment: 'casa',
+    isDarkMode: false
   });
+
+  // Load data from Supabase
+  useEffect(() => {
+    const loadProgress = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('mundo_atipicos_data')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error loading progress:', error);
+          toast.error('Erro ao carregar progresso');
+        } else if (data) {
+          // Map database data to progress state
+          const unlockedRewards = Array.isArray(data.unlocked_rewards) 
+            ? data.unlocked_rewards.filter((item): item is string => typeof item === 'string')
+            : [];
+          const gameScores = typeof data.game_scores === 'object' ? data.game_scores : {};
+          
+          setProgress({
+            name: user.user_metadata?.name || 'Visitante',
+            level: Math.floor((data.coins || 0) / 10) + 1,
+            coins: data.coins || 0,
+            pieces: data.pieces || 0,
+            completedPhases: unlockedRewards,
+            avatarConfig: {
+              skin: ['👤', '👨', '👩', '🧒', '👧', '👦', '👶', '🧑', '👴', '👵', '🧔', '👨‍🦰', '👩‍🦰', '👨‍🦱', '👩‍🦱'][data.selected_skin || 0],
+              hair: ['🎩', '👒', '🧢', '👑', '🎓', '💇', '🎀', '👸', '🤴', '🧕', '👳', '💆', '💅', '🦸', '🧙'][data.selected_hair || 0],
+              clothes: ['👕', '👔', '👗', '🦺', '👘', '🥼', '🥻', '👚', '🩱', '🩳', '👖', '🧥', '🧤', '🧣', '🎽'][data.selected_clothes || 0],
+              accessory: ['🎒', '🎸', '🎮', '📚', '⚽', '🎨', '🎪', '🎭', '🎬', '🎤', '🎧', '🎹', '🎺', '🎻', '🥁'][data.selected_accessories || 0],
+              expression: ['😊', '😄', '🤗', '😎', '🤔', '😴', '🥳', '😇', '🤩', '😋', '😌', '🤓', '🥰', '😍', '🤪'][data.selected_expression || 0]
+            },
+            environment: 'casa',
+            isDarkMode: false
+          });
+        } else if (user) {
+          // Create initial record for new user
+          const { error: insertError } = await supabase
+            .from('mundo_atipicos_data')
+            .insert({
+              user_id: user.id,
+              coins: 0,
+              pieces: 0,
+              selected_skin: 0,
+              selected_hair: 0,
+              selected_clothes: 0,
+              selected_accessories: 0,
+              selected_expression: 0,
+              unlocked_rewards: [],
+              game_scores: {}
+            });
+
+          if (insertError) {
+            console.error('Error creating progress:', insertError);
+          }
+        }
+      } catch (error) {
+        console.error('Error in loadProgress:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProgress();
+  }, [user]);
 
   // Welcome message on first load
   useEffect(() => {
@@ -67,9 +137,46 @@ const MundoAtipicosScreen: React.FC<MundoAtipicosScreenProps> = ({ onBack }) => 
     }
   }, []);
 
+  // Save progress to Supabase whenever it changes
   useEffect(() => {
-    localStorage.setItem('mundoAtipicos', JSON.stringify(progress));
-  }, [progress]);
+    const saveProgress = async () => {
+      if (!user) return;
+
+      try {
+        const skins = ['👤', '👨', '👩', '🧒', '👧', '👦', '👶', '🧑', '👴', '👵', '🧔', '👨‍🦰', '👩‍🦰', '👨‍🦱', '👩‍🦱'];
+        const hairs = ['🎩', '👒', '🧢', '👑', '🎓', '💇', '🎀', '👸', '🤴', '🧕', '👳', '💆', '💅', '🦸', '🧙'];
+        const clothes = ['👕', '👔', '👗', '🦺', '👘', '🥼', '🥻', '👚', '🩱', '🩳', '👖', '🧥', '🧤', '🧣', '🎽'];
+        const accessories = ['🎒', '🎸', '🎮', '📚', '⚽', '🎨', '🎪', '🎭', '🎬', '🎤', '🎧', '🎹', '🎺', '🎻', '🥁'];
+        const expressions = ['😊', '😄', '🤗', '😎', '🤔', '😴', '🥳', '😇', '🤩', '😋', '😌', '🤓', '🥰', '😍', '🤪'];
+
+        const { error } = await supabase
+          .from('mundo_atipicos_data')
+          .update({
+            coins: progress.coins,
+            pieces: progress.pieces,
+            selected_skin: skins.indexOf(progress.avatarConfig.skin),
+            selected_hair: hairs.indexOf(progress.avatarConfig.hair),
+            selected_clothes: clothes.indexOf(progress.avatarConfig.clothes),
+            selected_accessories: accessories.indexOf(progress.avatarConfig.accessory),
+            selected_expression: expressions.indexOf(progress.avatarConfig.expression),
+            unlocked_rewards: progress.completedPhases,
+            game_scores: {},
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', user.id);
+
+        if (error) {
+          console.error('Error saving progress:', error);
+        }
+      } catch (error) {
+        console.error('Error in saveProgress:', error);
+      }
+    };
+
+    if (!loading) {
+      saveProgress();
+    }
+  }, [progress, user, loading]);
 
   const speak = (text: string) => {
     try {
@@ -135,6 +242,28 @@ const MundoAtipicosScreen: React.FC<MundoAtipicosScreenProps> = ({ onBack }) => 
       speak('Você já completou esta fase!');
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-100 to-blue-100 flex items-center justify-center">
+        <div className="text-2xl font-bold text-purple-700">Carregando...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-100 to-blue-100 p-4 flex items-center justify-center">
+        <Card className="p-8 bg-white/90 backdrop-blur max-w-md text-center">
+          <h2 className="text-2xl font-bold text-purple-700 mb-4">Faça login para continuar</h2>
+          <p className="text-gray-600 mb-6">Você precisa estar logado para usar o Mundo Atípicos e salvar seu progresso.</p>
+          <Button onClick={onBack} className="w-full">
+            Voltar
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   const renderMainView = () => (
     <div className="min-h-screen bg-gradient-to-b from-purple-100 to-blue-100 dark:from-purple-900 dark:to-blue-900 p-4">

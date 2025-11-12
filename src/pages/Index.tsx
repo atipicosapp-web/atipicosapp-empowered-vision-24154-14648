@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PlansScreen from '@/components/PlansScreen';
 import SettingsScreen from '@/components/SettingsScreen';
 import WelcomeScreen from '@/components/WelcomeScreen';
+import AuthScreen from '@/components/AuthScreen';
+import { useAuth } from '@/hooks/useAuth';
 import AutismScreen from '@/components/AutismScreen';
 import FruitsScreen from '@/components/FruitsScreen';
 import PECSCommunicationScreen from '@/components/PECSCommunicationScreen';
@@ -30,11 +32,19 @@ interface UserData {
 }
 
 const Index = () => {
+  const { user, loading: authLoading } = useAuth();
   const [currentPage, setCurrentPage] = useState('welcome');
   const [textSize, setTextSize] = useState('large');
   const [voiceSpeed, setVoiceSpeed] = useState('normal'); // normal, fast, ultra-fast
   const [userData, setUserData] = useState<UserData | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<ShopifyProduct | null>(null);
+
+  // Redirect authenticated users from welcome to home
+  useEffect(() => {
+    if (user && currentPage === 'welcome') {
+      setCurrentPage('home');
+    }
+  }, [user, currentPage]);
 
   const handleNavigation = (page: string, data?: any) => {
     if (data?.name && data?.email) {
@@ -54,10 +64,25 @@ const Index = () => {
     setVoiceSpeed(speed);
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 to-blue-500">
+        <div className="text-white text-2xl font-bold">Carregando...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       {currentPage === 'welcome' && (
         <WelcomeScreen 
+          onNavigate={handleNavigation}
+          voiceSpeed={voiceSpeed}
+        />
+      )}
+
+      {currentPage === 'auth' && (
+        <AuthScreen 
           onNavigate={handleNavigation}
           voiceSpeed={voiceSpeed}
         />

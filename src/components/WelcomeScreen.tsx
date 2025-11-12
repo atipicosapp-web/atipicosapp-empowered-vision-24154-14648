@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Heart, Globe, Mail } from 'lucide-react';
 import { FaGoogle, FaYoutube, FaLinkedin, FaInstagram, FaFacebook, FaTiktok, FaPinterest, FaTwitter, FaWhatsapp } from 'react-icons/fa';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { z } from 'zod';
+import { toast } from 'sonner';
 
 interface WelcomeScreenProps {
   onNavigate: (page: string, userData?: UserData) => void;
@@ -18,6 +20,12 @@ interface UserData {
   phone: string;
   disability: string;
 }
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1, 'Nome é obrigatório').max(100, 'Nome muito longo'),
+  email: z.string().trim().email('Email inválido').max(255, 'Email muito longo'),
+  phone: z.string().trim().min(10, 'Telefone deve ter no mínimo 10 dígitos').max(20, 'Telefone muito longo').regex(/^[\d\s\-\+\(\)]+$/, 'Telefone inválido'),
+});
 
 const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
   const { language, setLanguage, t } = useLanguage();
@@ -54,15 +62,32 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
   }, []);
 
   const handleFinish = () => {
-    if (name && email && phone) {
+    try {
+      // Validate input
+      const validation = contactSchema.safeParse({
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+      });
+
+      if (!validation.success) {
+        const errorMessage = validation.error.errors[0].message;
+        toast.error(errorMessage);
+        speak(errorMessage);
+        return;
+      }
+
       const userData: UserData = {
-        name,
-        email,
-        phone,
+        name: validation.data.name,
+        email: validation.data.email,
+        phone: validation.data.phone,
         disability: 'autismo'
       };
-      speak(`${t('welcome.speechFinish')}, ${name}!`);
-      onNavigate('home', userData);
+      speak(`${t('welcome.speechFinish')}, ${validation.data.name}!`);
+      onNavigate('auth');
+    } catch (error) {
+      toast.error('Erro ao validar dados');
+      speak('Erro ao validar dados');
     }
   };
 
@@ -143,6 +168,7 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
                       onFocus={() => speak(t('welcome.speechTypeName'))}
                       className="bg-card border-2 border-primary text-card-foreground text-base sm:text-lg p-3 sm:p-4 rounded-xl"
                       placeholder={t('welcome.namePlaceholder')}
+                      maxLength={100}
                     />
                   </div>
 
@@ -158,6 +184,7 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
                       onFocus={() => speak(t('welcome.speechTypeEmail'))}
                       className="bg-card border-2 border-primary text-card-foreground text-base sm:text-lg p-3 sm:p-4 rounded-xl"
                       placeholder={t('welcome.emailPlaceholder')}
+                      maxLength={255}
                     />
                   </div>
 
@@ -172,6 +199,7 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
                       onChange={(e) => setPhone(e.target.value)}
                       className="bg-card border-2 border-primary text-card-foreground text-base sm:text-lg p-3 sm:p-4 rounded-xl"
                       placeholder="Seu telefone / WhatsApp"
+                      maxLength={20}
                     />
                   </div>
 
@@ -183,11 +211,14 @@ const WelcomeScreen = ({ onNavigate, voiceSpeed }: WelcomeScreenProps) => {
                     
                     <div className="grid grid-cols-1 gap-2">
                       <Button
-                        onClick={() => speak(t('welcome.continueGoogle'))}
+                        onClick={() => {
+                          speak('Criar conta ou fazer login');
+                          onNavigate('auth');
+                        }}
                         className="w-full bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2"
                       >
                         <FaGoogle className="w-4 h-4 text-red-500" />
-                        {t('welcome.continueGoogle')}
+                        Entrar / Criar Conta
                       </Button>
                       
                       <Button
