@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Plus, Trash2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, CheckCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { z } from 'zod';
+
+const routineSchema = z.object({
+  name: z.string().trim().min(1, "Nome da rotina é obrigatório").max(200, "Nome muito longo"),
+  type: z.string().trim().min(1, "Tipo é obrigatório"),
+  time: z.string().trim().min(1, "Horário é obrigatório").max(20, "Horário inválido"),
+});
 
 interface Routine {
   id: string;
@@ -26,11 +35,9 @@ interface FamilyRoutinesScreenProps {
 
 const FamilyRoutinesScreen = ({ onNavigate, textSize, voiceSpeed, userName }: FamilyRoutinesScreenProps) => {
   const { t, language } = useLanguage();
-  const [routines, setRoutines] = useState<Routine[]>([
-    { id: '1', name: 'Escovar os dentes', type: 'hygiene', time: '07:00', completed: false },
-    { id: '2', name: 'Café da manhã', type: 'food', time: '07:30', completed: false },
-    { id: '3', name: 'Ir para escola', type: 'school', time: '08:00', completed: false },
-  ]);
+  const { user, loading: authLoading } = useAuth();
+  const [routines, setRoutines] = useState<Routine[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newRoutine, setNewRoutine] = useState({ name: '', type: 'hygiene', time: '' });
 
@@ -69,43 +76,188 @@ const FamilyRoutinesScreen = ({ onNavigate, textSize, voiceSpeed, userName }: Fa
 
   const completionRate = Math.round((routines.filter(r => r.completed).length / routines.length) * 100) || 0;
 
-  const handleToggleComplete = (id: string) => {
-    setRoutines(routines.map(r => 
-      r.id === id ? { ...r, completed: !r.completed } : r
-    ));
-    const routine = routines.find(r => r.id === id);
-    if (routine && !routine.completed) {
-      speak(t('family.routines.completed'));
-      toast.success(t('family.routines.completed'));
+  // Fetch routines from database
+  useEffect(() => {
+    const fetchRoutines = async () => {
+      if (!user) return;
+      
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('family_routines')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('time', { ascending: true });
+
+        if (error) throw error;
+
+        if (data) {
+          setRoutines(
+            data.map((routine) => ({
+              id: routine.id,
+              name: routine.name,
+              type: routine.type,
+              time: routine.time,
+              completed: routine.completed || false,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error('Error fetching routines:', error);
+        toast.error('Erro ao carregar rotinas');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRoutines();
+  }, [user]);
+
+  const handleToggleComplete = async (id: string) => {
+    if (!user) return;
+
+    const routine = routines.find((r) => r.id === id);
+    if (!routine) return;
+
+    const newCompletedState = !routine.completed;
+
+    // Optimistic update
+    setRoutines(
+      routines.map((r) =>
+        r.id === id ? { ...r, completed: newCompletedState } : r
+      )
+    );
+
+    try {
+      const { error } = await supabase
+        .from('family_routines')
+        .update({ completed: newCompletedState })
+        .eq('id', id)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      if (newCompletedState) {
+        speak(t('family.routines.completed'));
+        toast.success(t('family.routines.completed'));
+      }
+    } catch (error) {
+      console.error('Error updating routine:', error);
+      toast.error('Erro ao atualizar rotina');
+      // Revert optimistic update
+      setRoutines(
+        routines.map((r) =>
+          r.id === id ? { ...r, completed: !newCompletedState } : r
+        )
+      );
     }
   };
 
-  const handleAddRoutine = () => {
-    if (!newRoutine.name || !newRoutine.time) {
-      toast.error('Por favor, preencha todos os campos');
+  const handleAddRoutine = async () => {
+    if (!user) {
+      toast.error('Você precisa estar autenticado');
       return;
     }
-    const routine: Routine = {
-      id: Date.now().toString(),
-      ...newRoutine,
-      completed: false
-    };
-    setRoutines([...routines, routine]);
-    setNewRoutine({ name: '', type: 'hygiene', time: '' });
-    setShowAddForm(false);
-    speak(`Nova rotina adicionada: ${routine.name}`);
-    toast.success('Rotina adicionada com sucesso!');
+
+    try {
+      // Validate input
+      const validatedData = routineSchema.parse(newRoutine);
+
+      const { data, error } = await supabase
+        .from('family_routines')
+        .insert({
+          user_id: user.id,
+          name: validatedData.name,
+          type: validatedData.type,
+          time: validatedData.time,
+          completed: false,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setRoutines([
+          ...routines,
+          {
+            id: data.id,
+            name: data.name,
+            type: data.type,
+            time: data.time,
+            completed: data.completed || false,
+          },
+        ]);
+        setNewRoutine({ name: '', type: 'hygiene', time: '' });
+        setShowAddForm(false);
+        speak(`Nova rotina adicionada: ${data.name}`);
+        toast.success('Rotina adicionada com sucesso!');
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast.error(error.errors[0].message);
+      } else {
+        console.error('Error adding routine:', error);
+        toast.error('Erro ao adicionar rotina');
+      }
+    }
   };
 
-  const handleDeleteRoutine = (id: string) => {
-    setRoutines(routines.filter(r => r.id !== id));
-    speak('Rotina excluída');
-    toast.success('Rotina excluída!');
+  const handleDeleteRoutine = async (id: string) => {
+    if (!user) return;
+
+    // Optimistic update
+    const routineToDelete = routines.find((r) => r.id === id);
+    setRoutines(routines.filter((routine) => routine.id !== id));
+
+    try {
+      const { error } = await supabase
+        .from('family_routines')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      speak('Rotina excluída');
+      toast.success('Rotina excluída!');
+    } catch (error) {
+      console.error('Error deleting routine:', error);
+      toast.error('Erro ao remover rotina');
+      // Revert optimistic update
+      if (routineToDelete) {
+        setRoutines([...routines, routineToDelete]);
+      }
+    }
   };
 
   useEffect(() => {
-    speak(t('family.routines.title'));
-  }, []);
+    if (!authLoading) {
+      speak(t('family.routines.title'));
+    }
+  }, [authLoading]);
+
+  // Authentication check
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-blue-50 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-blue-50 flex items-center justify-center p-4">
+        <Card className="p-6 max-w-md text-center border bg-white/70 border-purple-300">
+          <p className="text-lg mb-4">Você precisa estar autenticado para acessar esta área</p>
+          <Button onClick={() => onNavigate('auth')} className="bg-purple-600 hover:bg-purple-700">
+            Fazer Login
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-blue-50">
@@ -133,24 +285,43 @@ const FamilyRoutinesScreen = ({ onNavigate, textSize, voiceSpeed, userName }: Fa
 
       {/* Main Content */}
       <div className="p-4 sm:p-6 max-w-4xl mx-auto space-y-6">
-        {/* Completion Rate */}
-        <Card className="border bg-white/70 border-purple-300">
-          <div className="p-6">
-            <h2 className={`${getTextClass()} font-bold text-purple-700 mb-2`}>
-              {t('family.routines.completionRate')}: {completionRate}%
-            </h2>
-            <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-500"
-                style={{ width: `${completionRate}%` }}
-              />
+        {/* Loading State */}
+        {loading ? (
+          <Card className="border bg-white/70 border-purple-300">
+            <div className="p-8 flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-purple-600 mr-3" />
+              <span className={getTextClass()}>Carregando rotinas...</span>
             </div>
-          </div>
-        </Card>
+          </Card>
+        ) : (
+          <>
+            {/* Completion Rate */}
+            <Card className="border bg-white/70 border-purple-300">
+              <div className="p-6">
+                <h2 className={`${getTextClass()} font-bold text-purple-700 mb-2`}>
+                  {t('family.routines.completionRate')}: {completionRate}%
+                </h2>
+                <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-purple-400 to-blue-400 transition-all duration-500"
+                    style={{ width: `${completionRate}%` }}
+                  />
+                </div>
+              </div>
+            </Card>
 
-        {/* Routines List */}
-        <div className="space-y-3">
-          {routines.map((routine) => (
+            {/* Routines List */}
+            <div className="space-y-3">
+              {routines.length === 0 ? (
+                <Card className="border bg-white/70 border-purple-300">
+                  <div className="p-8 text-center text-gray-600">
+                    <p className={getTextClass()}>
+                      Nenhuma rotina cadastrada ainda. Clique em "Adicionar Rotina" para começar!
+                    </p>
+                  </div>
+                </Card>
+              ) : (
+                routines.map((routine) => (
             <Card key={routine.id} className="border bg-white/70 border-blue-300">
               <div className="p-4 flex items-center justify-between">
                 <div className="flex items-center space-x-4 flex-1">
@@ -177,11 +348,12 @@ const FamilyRoutinesScreen = ({ onNavigate, textSize, voiceSpeed, userName }: Fa
                   <Trash2 size={20} />
                 </Button>
               </div>
-            </Card>
-          ))}
-        </div>
+                </Card>
+              ))
+            )}
+            </div>
 
-        {/* Add Routine Button/Form */}
+            {/* Add Routine Button/Form */}
         {!showAddForm ? (
           <Button
             onClick={() => setShowAddForm(true)}
@@ -251,7 +423,9 @@ const FamilyRoutinesScreen = ({ onNavigate, textSize, voiceSpeed, userName }: Fa
                 </Button>
               </div>
             </div>
-          </Card>
+            </Card>
+          )}
+          </>
         )}
       </div>
     </div>
