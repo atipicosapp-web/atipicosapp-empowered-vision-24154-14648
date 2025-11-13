@@ -2,13 +2,12 @@ name: Build Android APK
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
@@ -17,20 +16,24 @@ jobs:
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK components
+        run: |
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Setup Node.js 18
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: 18
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Install Capacitor CLI
-        run: npm install -g @capacitor/cli
 
       - name: Build web assets
         run: npm run build
@@ -48,17 +51,16 @@ jobs:
         working-directory: android
         run: ./gradlew assembleRelease --no-daemon
 
-      - name: Sign APK
+      - name: Sign APK with apksigner (v2)
         working-directory: android/app/build/outputs/apk/release
+        env:
+          BUILD_TOOLS: ${{ env.ANDROID_SDK_ROOT }}/build-tools/35.0.0
         run: |
           # Create a temporary keystore for signing
           keytool -genkey -v -keystore release.keystore -alias atipicos -keyalg RSA -keysize 2048 -validity 10000 -storepass atipicos123 -keypass atipicos123 -dname "CN=AtipicosApp, OU=Development, O=Atipicos, L=Brazil, ST=BR, C=BR"
           
-          # Sign the APK
-          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore release.keystore -storepass atipicos123 -keypass atipicos123 app-release-unsigned.apk atipicos || mv app-release-unsigned.apk app-release-signed.apk
-          
-          # Rename to final name
-          mv app-release*.apk atipicos.apk || true
+          # Sign the APK using apksigner (Scheme v2)
+          "$BUILD_TOOLS/apksigner" sign --ks release.keystore --ks-pass pass:atipicos123 --key-pass pass:atipicos123 --out atipicos.apk app-release-unsigned.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -67,10 +69,12 @@ jobs:
           path: android/app/build/outputs/apk/release/atipicos.apk
           retention-days: 30
 
-      - name: Upload to Release (if tag exists)
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
-        with:
-          files: android/app/build/outputs/apk/release/atipicos.apk
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit APK to public/ and push back
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          cp android/app/build/outputs/apk/release/atipicos.apk public/atipicos.apk
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/atipicos.apk
+          git commit -m "chore: add latest atipicos.apk [skip ci]" || echo "No changes to commit"
+          git push
