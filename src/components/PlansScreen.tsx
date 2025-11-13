@@ -35,8 +35,8 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
     bpc: {
       priceId: 'price_1ST5wZKikeBfCW6cpQjrRruO',
       productId: 'prod_TPvol7F0TrkMOV',
-      name: 'BPC LOAS',
-      price: 'R$ 49,00'
+      name: 'BPC/LOAS',
+      price: 'R$ 49,90'
     },
     premium: {
       priceId: 'price_1ST5wvKikeBfCW6cIumUmPjX',
@@ -149,10 +149,15 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
     "Assistente com linguagem clara e objetiva",
     "Redução de sobrecarga sensorial com interface minimalista",
     "Suporte para crises com técnicas de regulação",
-    "Lista de tarefas com check-lists visuais"
+    "Lista de tarefas com check-lists visuais",
+    "Acesso à biblioteca de cursos especializados",
+    "Conexão com profissionais (terapeutas, fonoaudiólogos)",
+    "Professor IA para suporte educacional personalizado"
   ];
 
   const premiumFeatures = [
+    "🎁 Smartwatch GRÁTIS após 3 meses - Prevenção de crises com integração completa",
+    "🎁 Tablet GRÁTIS após 6 meses - Para uso exclusivo do aplicativo",
     "Sistema de recompensas gamificado para motivação",
     "Detecção de sobrecarga sensorial com alertas preventivos",
     "Modo foco: bloqueia distrações automaticamente",
@@ -160,7 +165,12 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
     "Histórico de humor e gatilhos para autoconhecimento",
     "Integração com cuidadores e terapeutas",
     "Planos de contingência para situações de crise",
-    "Relatórios de progresso e análise comportamental"
+    "Relatórios de progresso e análise comportamental",
+    "Acesso completo à biblioteca de cursos especializados",
+    "Sessões com profissionais: terapeutas, fonoaudiólogos, psicólogos",
+    "Professor IA avançado com personalização total",
+    "Comunidade exclusiva de famílias e cuidadores",
+    "Suporte prioritário via chat e voz 24/7"
   ];
 
   const voiceExamples = [
@@ -277,15 +287,25 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
               <h2 className="text-xl font-bold text-white mb-2">
                 ⚠️ Trial Expirado
               </h2>
-              <p className="text-red-100 mb-4">
-                Seu período de teste terminou. Assine um plano para continuar usando!
+              <p className="text-red-100 mb-2">
+                Seu período de teste de 3 dias terminou.
               </p>
+              <p className="text-red-100 mb-4">
+                Assine um plano para continuar usando todas as funcionalidades!
+              </p>
+              {subscriptionStatus?.trialEndsAt && (
+                <div className="bg-red-900/50 p-3 rounded-lg">
+                  <p className="text-sm text-red-200">
+                    Período de teste encerrou em: {new Date(subscriptionStatus.trialEndsAt).toLocaleDateString('pt-BR')}
+                  </p>
+                </div>
+              )}
             </div>
           </Card>
         )}
 
         {/* Grid de Planos */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           
           {/* Plano BBC/LOAS */}
           <Card className="bg-gray-900 border-2 border-blue-600 hover:border-blue-400 transition-all duration-200">
@@ -301,6 +321,9 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
                 <p className="text-sm sm:text-base lg:text-lg text-gray-300">{t('plans.perMonth')}</p>
                 <p className="text-xs sm:text-sm text-blue-200 mt-1 sm:mt-2">
                   {t('plans.bbcDesc')}
+                </p>
+                <p className="text-xs text-yellow-300 mt-2 font-semibold">
+                  * Mediante comprovação de documentos para análise
                 </p>
               </div>
 
@@ -393,27 +416,137 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
                 </ul>
               </div>
 
-              <div className="space-y-3">
-                <Button
-                  onClick={() => handleCheckout(PLANS.premium.priceId)}
-                  disabled={loading || hasActiveSubscription}
-                  onMouseEnter={() => speak('Plano Premium Mensal')}
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white py-3 sm:py-4 rounded-xl text-base sm:text-lg font-bold border-2 border-purple-400 shadow-lg disabled:opacity-50"
-                >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
-                  {hasActiveSubscription ? 'Plano Ativo' : 'Assinar Mensal - R$ 67,00'}
-                </Button>
+              <Button
+                onClick={() => handleCheckout(PLANS.premium.priceId)}
+                disabled={loading || hasActiveSubscription}
+                onMouseEnter={() => speak('Plano Premium Mensal')}
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white py-3 sm:py-4 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-bold border-2 border-purple-400 shadow-lg disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                {hasActiveSubscription ? 'Plano Ativo' : 'Assinar Mensal - R$ 67,00'}
+              </Button>
+            </div>
+          </Card>
+
+          {/* Plano Anual */}
+          <Card className="bg-gradient-to-br from-yellow-900 via-orange-900 to-yellow-900 border-2 border-yellow-500 hover:border-yellow-400 transition-all duration-200 relative overflow-hidden">
+            {/* Badge de Melhor Oferta */}
+            <div className="absolute top-0 right-0 bg-gradient-to-l from-green-500 to-emerald-500 text-white px-3 sm:px-4 lg:px-6 py-1 sm:py-2 text-xs sm:text-sm font-bold">
+              🏆 MELHOR OFERTA
+            </div>
+            
+            <div className="p-4 sm:p-6 lg:p-8">
+              <div className="text-center mb-4 sm:mb-6">
+                <Trophy size={48} className="text-yellow-300 mx-auto mb-2 sm:mb-4 w-8 h-8 sm:w-12 sm:h-12" />
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-yellow-300 mb-1 sm:mb-2">
+                  👑 Plano Anual VIP
+                </h2>
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1 sm:mb-2">
+                  R$ 599,00
+                </div>
+                <p className="text-sm sm:text-base lg:text-lg text-gray-300">12 meses</p>
+                <p className="text-xs sm:text-sm text-yellow-200 mt-1 sm:mt-2">
+                  Economize R$ 205 por ano!
+                </p>
                 
-                <Button
-                  onClick={() => handleCheckout(PLANS.annual.priceId)}
-                  disabled={loading || hasActiveSubscription}
-                  onMouseEnter={() => speak('Plano Anual com Desconto')}
-                  className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white py-3 sm:py-4 rounded-xl text-base sm:text-lg font-bold border-2 border-yellow-400 shadow-lg disabled:opacity-50"
-                >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
-                  {hasActiveSubscription ? 'Plano Ativo' : 'Assinar Anual - R$ 599,00'}
-                </Button>
+                {/* Destaque dos Brindes */}
+                <div className="mt-4 bg-green-900/50 border-2 border-green-400 rounded-lg p-3">
+                  <p className="text-base sm:text-lg font-bold text-green-300 mb-2">
+                    🎁 GANHE INSTANTANEAMENTE:
+                  </p>
+                  <div className="space-y-1 text-left">
+                    <p className="text-sm text-green-100 flex items-center">
+                      <CheckCircle className="w-4 h-4 mr-2 text-green-400" />
+                      Smartwatch para prevenção de crises
+                    </p>
+                    <p className="text-sm text-green-100 flex items-center">
+                      <CheckCircle className="w-4 h-4 mr-2 text-green-400" />
+                      Tablet exclusivo para o aplicativo
+                    </p>
+                  </div>
+                  <p className="text-xs text-green-200 mt-2">
+                    * Totalmente GRÁTIS após confirmação da assinatura
+                  </p>
+                </div>
               </div>
+
+              <div className="mb-4 sm:mb-6">
+                <h3 className="text-base sm:text-lg font-semibold text-white mb-2 sm:mb-4">
+                  ✨ Todas as Funcionalidades Premium:
+                </h3>
+                <ul className="space-y-1 sm:space-y-2">
+                  <li className="flex items-start">
+                    <CheckCircle size={16} className="text-yellow-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-300">Sistema completo de rotinas visuais e lembretes</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle size={16} className="text-yellow-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-300">Comunicação alternativa (PECS + pictogramas)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle size={16} className="text-yellow-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-300">Detecção e prevenção de crises com IA</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle size={16} className="text-yellow-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-300">Biblioteca completa de cursos especializados</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle size={16} className="text-yellow-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-300">Acesso a profissionais: terapeutas, fonoaudiólogos, psicólogos</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle size={16} className="text-yellow-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-300">Professor IA personalizado para educação especial</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle size={16} className="text-yellow-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-300">Modo foco anti-distração</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle size={16} className="text-yellow-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-300">Relatórios detalhados de progresso</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle size={16} className="text-yellow-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-300">Comunidade exclusiva de famílias</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle size={16} className="text-yellow-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-300">Suporte prioritário 24/7</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mb-4 sm:mb-6 bg-yellow-900/40 p-3 sm:p-4 rounded-lg">
+                <h4 className="text-sm sm:text-base font-semibold text-yellow-300 mb-2">
+                  💎 Benefícios Exclusivos VIP:
+                </h4>
+                <ul className="space-y-1">
+                  <li className="text-xs sm:text-sm text-yellow-100">
+                    "• Economia de mais de R$ 200 por ano"
+                  </li>
+                  <li className="text-xs sm:text-sm text-yellow-100">
+                    "• Smartwatch + Tablet grátis na assinatura"
+                  </li>
+                  <li className="text-xs sm:text-sm text-yellow-100">
+                    "• Acesso vitalício a todas atualizações"
+                  </li>
+                  <li className="text-xs sm:text-sm text-yellow-100">
+                    "• Prioridade em novos recursos"
+                  </li>
+                </ul>
+              </div>
+
+              <Button
+                onClick={() => handleCheckout(PLANS.annual.priceId)}
+                disabled={loading || hasActiveSubscription}
+                onMouseEnter={() => speak('Plano Anual VIP com Brindes')}
+                className="w-full bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-500 hover:to-orange-500 text-white py-3 sm:py-4 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-bold border-2 border-yellow-400 shadow-lg disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                {hasActiveSubscription ? 'Plano Ativo' : '👑 Assinar Anual VIP - R$ 599,00'}
+              </Button>
             </div>
           </Card>
         </div>
