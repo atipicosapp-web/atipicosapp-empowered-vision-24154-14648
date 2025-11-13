@@ -59,6 +59,16 @@ All colors MUST be HSL.
       hsl(var(--gradient-blue-medium)) 80%,
       hsl(var(--gradient-blue-light)) 100%);
 
+    /* Cores do degradê AtípicosApp (da logo) */
+    --blue-light: 200 100% 65%;
+    --blue-medium: 220 80% 55%;
+    --purple: 270 70% 50%;
+    --magenta: 330 85% 55%;
+    
+    /* Gradientes da Landing Page */
+    --gradient-primary: linear-gradient(180deg, hsl(var(--blue-light)), hsl(var(--blue-medium)), hsl(var(--purple)), hsl(var(--magenta)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--blue-medium)), hsl(var(--purple)));
+
     --sidebar-background: 280 30% 92%;
     --sidebar-foreground: 220 90% 20%;
     --sidebar-primary: 220 90% 40%;
