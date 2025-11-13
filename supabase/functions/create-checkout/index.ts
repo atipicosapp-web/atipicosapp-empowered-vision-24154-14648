@@ -92,13 +92,43 @@ serve(async (req) => {
       });
     }
 
-    const { priceId } = await req.json();
-    if (!priceId) throw new Error("Price ID is required");
+    const body = await req.json().catch(() => ({}));
+    const requestPriceId = body?.priceId as string | undefined;
+    const plan = body?.plan as 'bpc' | 'premium' | 'annual' | undefined;
 
+    // Whitelist of valid current prices and fallback mapping from old -> new
+    const PRICE_MAP: Record<string, string> = {
+      bpc: 'price_1ST5wZKikeBfCW6cpQjrRruO',
+      premium: 'price_1ST5wvKikeBfCW6cIumUmPjX',
+      annual: 'price_1ST5xCKikeBfCW6cQhi4ZM4k',
+    };
+
+    const OLD_TO_NEW: Record<string, string> = {
+      'price_1SPqcn9kmkJf8gmLp7rJPfZW': PRICE_MAP.bpc,
+      'price_1SPqd29kmkJf8gmLlpZwQY6y': PRICE_MAP.premium,
+      'price_1SPqdE9kmkJf8gmLpac3nvsu': PRICE_MAP.annual,
+    };
+
+    let finalPriceId = '';
+    if (plan && PRICE_MAP[plan]) {
+      finalPriceId = PRICE_MAP[plan];
+      console.log('[CREATE-CHECKOUT] Using plan mapping', { plan, finalPriceId });
+    } else if (
+      requestPriceId &&
+      Object.values(PRICE_MAP).includes(requestPriceId)
+    ) {
+      finalPriceId = requestPriceId;
+      console.log('[CREATE-CHECKOUT] Using provided current priceId', { finalPriceId });
+    } else if (requestPriceId && OLD_TO_NEW[requestPriceId]) {
+      finalPriceId = OLD_TO_NEW[requestPriceId];
+      console.log('[CREATE-CHECKOUT] Mapped legacy priceId to current', { requestPriceId, finalPriceId });
+    } else {
+      throw new Error('Invalid or missing price ID. Please atualizar a página e tentar novamente.');
+    }
+    // Initialize Stripe and find existing customer for this email
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
       apiVersion: "2025-08-27.basil" 
     });
-    
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     let customerId;
     if (customers.data.length > 0) {
@@ -110,7 +140,7 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price: priceId,
+          price: finalPriceId,
           quantity: 1,
         },
       ],
