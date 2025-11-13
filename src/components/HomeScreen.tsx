@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Mic, 
   Camera, 
@@ -252,40 +253,40 @@ const HomeScreen = ({ onNavigate, textSize, voiceSpeed, userName, userDisability
 
         {/* Links de Políticas e Termos */}
         <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mt-8 pt-6 border-t border-border/50 text-xs sm:text-sm">
-          <a 
-            href="/politica-privacidade" 
+          <Link 
+            to="/politica-privacidade" 
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             Política de Privacidade
-          </a>
+          </Link>
           <span className="text-muted-foreground">•</span>
-          <a 
-            href="/termos-uso" 
+          <Link 
+            to="/termos-uso" 
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             Termos de Uso
-          </a>
+          </Link>
           <span className="text-muted-foreground">•</span>
-          <a 
-            href="/lgpd" 
+          <Link 
+            to="/lgpd" 
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             LGPD
-          </a>
+          </Link>
           <span className="text-muted-foreground">•</span>
-          <a 
-            href="/acessibilidade" 
+          <Link 
+            to="/acessibilidade" 
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             Acessibilidade
-          </a>
+          </Link>
           <span className="text-muted-foreground">•</span>
-          <a 
-            href="/ouvidoria" 
+          <Link 
+            to="/ouvidoria" 
             className="text-muted-foreground hover:text-foreground transition-colors"
           >
             Ouvidoria
-          </a>
+          </Link>
         </div>
       </div>
 
