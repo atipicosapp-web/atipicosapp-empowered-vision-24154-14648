@@ -11,6 +11,7 @@ import TermosUso from "./pages/TermosUso";
 import LGPD from "./pages/LGPD";
 import Acessibilidade from "./pages/Acessibilidade";
 import Ouvidoria from "./pages/Ouvidoria";
+import LandingPage from "./pages/LandingPage";
 
 const queryClient = new QueryClient();
 
@@ -22,7 +23,8 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/app" element={<Index />} />
             <Route path="/politica-privacidade" element={<PoliticaPrivacidade />} />
             <Route path="/termos-uso" element={<TermosUso />} />
             <Route path="/lgpd" element={<LGPD />} />
