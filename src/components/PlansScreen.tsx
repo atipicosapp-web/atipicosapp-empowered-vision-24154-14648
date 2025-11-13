@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +14,8 @@ import {
   Lock,
   Star,
   Loader2,
-  ExternalLink
+  ExternalLink,
+  Clock
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,6 +31,7 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
   const [loading, setLoading] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState<any>(null);
   const [checkingStatus, setCheckingStatus] = useState(true);
+  const [currentTime, setCurrentTime] = useState(new Date());
   
   const PLANS = {
     bpc: {
@@ -89,7 +91,32 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
     setTimeout(() => {
       speak("ATIPICOS, o aplicativo desenvolvido especialmente para pessoas com autismo e TDAH. Planos disponíveis: BPC LOAS 49 reais. Premium 67 reais. Anual 599 reais. Teste grátis 3 dias.");
     }, 1000);
+    
+    // Atualizar o relógio a cada segundo
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    
+    return () => clearInterval(timer);
   }, []);
+  
+  // Calcular tempo restante do trial
+  const trialTimeRemaining = useMemo(() => {
+    if (!subscriptionStatus?.trialEndsAt) return null;
+    
+    const now = currentTime.getTime();
+    const trialEnd = new Date(subscriptionStatus.trialEndsAt).getTime();
+    const diff = trialEnd - now;
+    
+    if (diff <= 0) return { expired: true, days: 0, hours: 0, minutes: 0, seconds: 0 };
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    return { expired: false, days, hours, minutes, seconds };
+  }, [subscriptionStatus?.trialEndsAt, currentTime]);
 
   const handleCheckout = async (priceId: string) => {
     try {
@@ -275,9 +302,34 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
               <p className="text-blue-100 mb-2">
                 Você está no período de teste gratuito!
               </p>
-              <p className="text-sm text-blue-200">
-                Termina em: {new Date(subscriptionStatus?.trialEndsAt).toLocaleDateString('pt-BR')}
-              </p>
+              {trialTimeRemaining && !trialTimeRemaining.expired && (
+                <div className="bg-blue-900/50 p-4 rounded-lg mt-4">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Clock className="w-5 h-5 text-yellow-400" />
+                    <p className="text-sm text-blue-200">Tempo restante:</p>
+                  </div>
+                  <div className="flex justify-center gap-4 text-white">
+                    {trialTimeRemaining.days > 0 && (
+                      <div className="text-center">
+                        <div className="text-2xl font-bold">{trialTimeRemaining.days}</div>
+                        <div className="text-xs text-blue-200">dias</div>
+                      </div>
+                    )}
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">{trialTimeRemaining.hours.toString().padStart(2, '0')}</div>
+                      <div className="text-xs text-blue-200">horas</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">{trialTimeRemaining.minutes.toString().padStart(2, '0')}</div>
+                      <div className="text-xs text-blue-200">min</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold">{trialTimeRemaining.seconds.toString().padStart(2, '0')}</div>
+                      <div className="text-xs text-blue-200">seg</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
         ) : (
@@ -294,9 +346,29 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
                 Assine um plano para continuar usando todas as funcionalidades!
               </p>
               {subscriptionStatus?.trialEndsAt && (
-                <div className="bg-red-900/50 p-3 rounded-lg">
-                  <p className="text-sm text-red-200">
-                    Período de teste encerrou em: {new Date(subscriptionStatus.trialEndsAt).toLocaleDateString('pt-BR')}
+                <div className="bg-red-900/50 p-4 rounded-lg">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Clock className="w-5 h-5 text-red-300" />
+                    <p className="text-sm text-red-200">Período de teste encerrou há:</p>
+                  </div>
+                  {trialTimeRemaining && trialTimeRemaining.expired && (
+                    <div className="flex justify-center gap-4 text-white">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold">{Math.abs(trialTimeRemaining.days)}</div>
+                        <div className="text-xs text-red-200">dias</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold">{Math.abs(trialTimeRemaining.hours).toString().padStart(2, '0')}</div>
+                        <div className="text-xs text-red-200">horas</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold">{Math.abs(trialTimeRemaining.minutes).toString().padStart(2, '0')}</div>
+                        <div className="text-xs text-red-200">min</div>
+                      </div>
+                    </div>
+                  )}
+                  <p className="text-xs text-red-200 mt-3">
+                    Encerrado em: {new Date(subscriptionStatus.trialEndsAt).toLocaleDateString('pt-BR')} às {new Date(subscriptionStatus.trialEndsAt).toLocaleTimeString('pt-BR')}
                   </p>
                 </div>
               )}
@@ -403,18 +475,6 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
                 </ul>
               </div>
 
-              <div className="mb-4 sm:mb-6 bg-purple-900/40 p-3 sm:p-4 rounded-lg">
-                <h4 className="text-sm sm:text-base font-semibold text-purple-300 mb-2">
-                  {t('plans.advancedControl')}
-                </h4>
-                <ul className="space-y-1">
-                  {premiumExamples.map((example, index) => (
-                    <li key={index} className="text-xs sm:text-sm text-purple-100">
-                      "• {example}"
-                    </li>
-                  ))}
-                </ul>
-              </div>
 
               <Button
                 onClick={() => handleCheckout(PLANS.premium.priceId)}

@@ -80,7 +80,7 @@ export default {
   'plans.freeTrial': '3 Días Gratis',
   'plans.freeTrialDesc': 'Prueba sin compromiso todas las funcionalidades - sin tarjeta de crédito',
   'plans.activateFreeTrial': 'Activar prueba gratuita de 3 días',
-  'plans.bbcTitle': 'Plan BBC/LOAS',
+  'plans.bbcTitle': 'Plan BPC/LOAS',
   'plans.bbcPrice': '$5.99',
   'plans.perMonth': 'por mes',
   'plans.bbcDesc': 'Ideal para empezar con recursos esenciales de organización y rutina',
