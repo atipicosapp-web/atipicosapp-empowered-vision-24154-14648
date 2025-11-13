@@ -249,6 +249,44 @@ const HomeScreen = ({ onNavigate, textSize, voiceSpeed, userName, userDisability
         >
           <span className={`${getTextClass()} font-bold`}>Ver Planos</span>
         </Button>
+
+        {/* Links de Políticas e Termos */}
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mt-8 pt-6 border-t border-border/50 text-xs sm:text-sm">
+          <a 
+            href="/politica-privacidade" 
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Política de Privacidade
+          </a>
+          <span className="text-muted-foreground">•</span>
+          <a 
+            href="/termos-uso" 
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Termos de Uso
+          </a>
+          <span className="text-muted-foreground">•</span>
+          <a 
+            href="/lgpd" 
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            LGPD
+          </a>
+          <span className="text-muted-foreground">•</span>
+          <a 
+            href="/acessibilidade" 
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Acessibilidade
+          </a>
+          <span className="text-muted-foreground">•</span>
+          <a 
+            href="/ouvidoria" 
+            className="text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Ouvidoria
+          </a>
+        </div>
       </div>
 
       {/* Avatar de Libras para usuários surdos */}
