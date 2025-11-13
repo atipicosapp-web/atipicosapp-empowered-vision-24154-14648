@@ -34,117 +34,26 @@ interface CartStore {
   createCheckout: () => Promise<void>;
 }
 
-const SHOPIFY_API_VERSION = '2025-07';
-const SHOPIFY_STORE_PERMANENT_DOMAIN = 'atipicosapp-empowered-vision-24154-14648-anuqb.myshopify.com';
-const SHOPIFY_STOREFRONT_URL = `https://${SHOPIFY_STORE_PERMANENT_DOMAIN}/api/${SHOPIFY_API_VERSION}/graphql.json`;
-const SHOPIFY_STOREFRONT_TOKEN = '64a9698edb8cdb9859f13433ce61ade0';
-
-const CART_CREATE_MUTATION = `
-  mutation cartCreate($input: CartInput!) {
-    cartCreate(input: $input) {
-      cart {
-        id
-        checkoutUrl
-        totalQuantity
-        cost {
-          totalAmount {
-            amount
-            currencyCode
-          }
-        }
-        lines(first: 100) {
-          edges {
-            node {
-              id
-              quantity
-              merchandise {
-                ... on ProductVariant {
-                  id
-                  title
-                  price {
-                    amount
-                    currencyCode
-                  }
-                  product {
-                    title
-                    handle
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      userErrors {
-        field
-        message
-      }
-    }
-  }
-`;
-
-async function storefrontApiRequest(query: string, variables: any = {}) {
-  const response = await fetch(SHOPIFY_STOREFRONT_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Shopify-Storefront-Access-Token': SHOPIFY_STOREFRONT_TOKEN
-    },
-    body: JSON.stringify({
-      query,
-      variables,
-    }),
-  });
-
-  if (response.status === 402) {
-    toast.error("Shopify: Pagamento necessário", {
-      description: "O acesso à API do Shopify requer um plano de cobrança ativo. Sua loja precisa ser atualizada para um plano pago."
-    });
-    return;
-  }
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const data = await response.json();
-  
-  if (data.errors) {
-    throw new Error(`Erro ao chamar Shopify: ${data.errors.map((e: any) => e.message).join(', ')}`);
-  }
-
-  return data;
-}
-
-async function createStorefrontCheckout(items: CartItem[]): Promise<string> {
+// Checkout via Stripe for product purchases
+async function createStripeCheckout(items: CartItem[]): Promise<string> {
   try {
-    const lines = items.map(item => ({
-      quantity: item.quantity,
-      merchandiseId: item.variantId,
-    }));
+    const { supabase } = await import('@/integrations/supabase/client');
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error('Você precisa estar logado para finalizar a compra');
+    }
 
-    const cartData = await storefrontApiRequest(CART_CREATE_MUTATION, {
-      input: {
-        lines,
-      },
+    const { data, error } = await supabase.functions.invoke('create-product-checkout', {
+      body: { items }
     });
 
-    if (cartData.data.cartCreate.userErrors.length > 0) {
-      throw new Error(`Falha ao criar carrinho: ${cartData.data.cartCreate.userErrors.map((e: any) => e.message).join(', ')}`);
-    }
+    if (error) throw error;
+    if (!data?.url) throw new Error('Nenhuma URL de checkout retornada');
 
-    const cart = cartData.data.cartCreate.cart;
-    
-    if (!cart.checkoutUrl) {
-      throw new Error('Nenhuma URL de checkout retornada do Shopify');
-    }
-
-    const url = new URL(cart.checkoutUrl);
-    url.searchParams.set('channel', 'online_store');
-    const checkoutUrl = url.toString();
-    return checkoutUrl;
+    return data.url;
   } catch (error) {
-    console.error('Erro ao criar checkout storefront:', error);
+    console.error('Erro ao criar checkout Stripe:', error);
     throw error;
   }
 }
@@ -210,11 +119,13 @@ export const useCartStore = create<CartStore>()(
 
         setLoading(true);
         try {
-          const checkoutUrl = await createStorefrontCheckout(items);
+          const checkoutUrl = await createStripeCheckout(items);
           setCheckoutUrl(checkoutUrl);
+          toast.success('Redirecionando para pagamento Stripe...');
         } catch (error) {
           console.error('Falha ao criar checkout:', error);
-          toast.error("Erro ao criar checkout. Tente novamente.");
+          const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+          toast.error(errorMessage);
         } finally {
           setLoading(false);
         }
