@@ -36,37 +36,14 @@ import logo from '@/assets/logo-atipicos.jpg';
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleDownload = async () => {
-    try {
-      // Verifica se o arquivo existe antes de tentar baixar
-      const res = await fetch('/atipicos.apk', { method: 'HEAD' });
-      if (!res.ok) {
-        // Feedback amigável no caso de 404
-        const { toast } = await import('@/components/ui/use-toast');
-        toast({
-          title: 'APK indisponível',
-          description: 'Ainda não encontramos o arquivo atipicos.apk. Atualize a página após o upload ou tente novamente em alguns minutos.',
-          variant: 'destructive',
-        } as any);
-        return;
-      }
-
-      // Dispara o download
-      const link = document.createElement('a');
-      link.href = '/atipicos.apk';
-      link.download = 'Atipicos.apk';
-      link.rel = 'noopener';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (e) {
-      const { toast } = await import('@/components/ui/use-toast');
-      toast({
-        title: 'Falha no download',
-        description: 'Ocorreu um erro ao iniciar o download no seu dispositivo.',
-        variant: 'destructive',
-      } as any);
-    }
+  const handleDownload = () => {
+    // Criar um link temporário para download do APK
+    const link = document.createElement('a');
+    link.href = '/atipicos.apk'; // Será o arquivo APK na pasta public
+    link.download = 'Atipicos.apk';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const scrollToSection = (id: string) => {
@@ -156,11 +133,11 @@ const LandingPage = () => {
                 <span className="text-sm font-medium">Campeão de vendas nos EUA, Canadá e Portugal</span>
               </div>
               
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 leading-tight tracking-tight max-w-prose">
+              <h1 className="text-3xl md:text-4xl font-bold mb-6 leading-tight">
                 O aplicativo mais completo para Autistas, TDAH, PCD, Famílias e Cuidadores
               </h1>
               
-              <p className="text-base sm:text-lg md:text-xl mb-8 text-white/90 max-w-prose">
+              <p className="text-xl mb-8 text-white/90">
                 Comunicação, prevenção de crises, rotina visual, comunidade, jogos educativos e suporte profissional em um só lugar.
               </p>
 

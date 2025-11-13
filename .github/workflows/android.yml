@@ -24,10 +24,7 @@ jobs:
 
       - name: Install Android SDK components
         run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0" || true
-          sdkmanager "platforms;android-34" "build-tools;34.0.0"
-          echo "Available build-tools:" && ls -1 "$ANDROID_SDK_ROOT/build-tools" || true
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
       - name: Setup Node.js 18
         uses: actions/setup-node@v4
@@ -56,13 +53,11 @@ jobs:
 
       - name: Sign APK with apksigner (v2)
         working-directory: android/app/build/outputs/apk/release
+        env:
+          BUILD_TOOLS: ${{ env.ANDROID_SDK_ROOT }}/build-tools/35.0.0
         run: |
           # Create a temporary keystore for signing
           keytool -genkey -v -keystore release.keystore -alias atipicos -keyalg RSA -keysize 2048 -validity 10000 -storepass atipicos123 -keypass atipicos123 -dname "CN=AtipicosApp, OU=Development, O=Atipicos, L=Brazil, ST=BR, C=BR"
-          
-          # Find latest available build-tools folder dynamically
-          BUILD_TOOLS=$(ls -d "$ANDROID_SDK_ROOT"/build-tools/* | sort -V | tail -n 1)
-          echo "Using build tools at: $BUILD_TOOLS"
           
           # Sign the APK using apksigner (Scheme v2)
           "$BUILD_TOOLS/apksigner" sign --ks release.keystore --ks-pass pass:atipicos123 --key-pass pass:atipicos123 --out atipicos.apk app-release-unsigned.apk
