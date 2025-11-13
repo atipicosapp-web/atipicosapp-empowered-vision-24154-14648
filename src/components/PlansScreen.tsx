@@ -33,20 +33,20 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
   
   const PLANS = {
     bpc: {
-      priceId: 'price_1SPqcn9kmkJf8gmLp7rJPfZW',
-      productId: 'prod_TMZmTOjkhXspMP',
+      priceId: 'price_1ST5wZKikeBfCW6cpQjrRruO',
+      productId: 'prod_TPvol7F0TrkMOV',
       name: 'BPC LOAS',
       price: 'R$ 49,00'
     },
     premium: {
-      priceId: 'price_1SPqd29kmkJf8gmLlpZwQY6y',
-      productId: 'prod_TMZmTuopvGzYtW',
+      priceId: 'price_1ST5wvKikeBfCW6cIumUmPjX',
+      productId: 'prod_TPvoZCPw1RIITz',
       name: 'Premium',
       price: 'R$ 67,00'
     },
     annual: {
-      priceId: 'price_1SPqdE9kmkJf8gmLpac3nvsu',
-      productId: 'prod_TMZmtZMpiseynO',
+      priceId: 'price_1ST5xCKikeBfCW6cQhi4ZM4k',
+      productId: 'prod_TPvo2JQxxzZ4be',
       name: 'Anual',
       price: 'R$ 599,00'
     }
