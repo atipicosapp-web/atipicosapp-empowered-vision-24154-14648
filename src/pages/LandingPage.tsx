@@ -37,8 +37,13 @@ const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleDownload = () => {
-    // Aqui você pode adicionar o link direto do APK quando estiver disponível
-    window.location.href = 'https://atipicosapp.com/downloads/atipicos.apk';
+    // Criar um link temporário para download do APK
+    const link = document.createElement('a');
+    link.href = '/atipicos.apk'; // Será o arquivo APK na pasta public
+    link.download = 'Atipicos.apk';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const scrollToSection = (id: string) => {
@@ -75,7 +80,7 @@ const LandingPage = () => {
             <button onClick={() => scrollToSection('depoimentos')} className="text-sm hover:text-primary transition-colors">
               Depoimentos
             </button>
-            <Button onClick={handleDownload} size="lg" className="bg-gradient-to-r from-[hsl(var(--blue-medium))] to-[hsl(var(--magenta))] hover:opacity-90">
+            <Button onClick={handleDownload} className="bg-gradient-to-r from-[hsl(var(--blue-medium))] to-[hsl(var(--magenta))] hover:opacity-90">
               <Download className="mr-2 h-4 w-4" />
               BAIXAR AGORA
             </Button>
@@ -128,7 +133,7 @@ const LandingPage = () => {
                 <span className="text-sm font-medium">Campeão de vendas nos EUA, Canadá e Portugal</span>
               </div>
               
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              <h1 className="text-3xl md:text-4xl font-bold mb-6 leading-tight">
                 O aplicativo mais completo para Autistas, TDAH, PCD, Famílias e Cuidadores
               </h1>
               
@@ -137,11 +142,11 @@ const LandingPage = () => {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <Button onClick={handleDownload} size="lg" className="bg-white text-[hsl(var(--purple))] hover:bg-white/90 text-lg px-8 py-6">
-                  <Download className="mr-2 h-5 w-5" />
+                <Button onClick={handleDownload} className="bg-white text-[hsl(var(--purple))] hover:bg-white/90 px-6 py-5">
+                  <Download className="mr-2 h-4 w-4" />
                   BAIXAR AGORA
                 </Button>
-                <Button onClick={handleDownload} size="lg" variant="outline" className="bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white/20 text-lg px-8 py-6">
+                <Button onClick={handleDownload} variant="outline" className="bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white/20 px-6 py-5">
                   Teste Grátis 3 Dias
                 </Button>
               </div>
@@ -184,32 +189,10 @@ const LandingPage = () => {
       {/* Sobre o AtípicosApp */}
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">O que é o AtípicosApp?</h2>
-          <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-            O <strong>AtípicosApp</strong> é mais do que um aplicativo — é uma ferramenta de transformação para famílias, cuidadores e pessoas com autismo, TDAH e outras necessidades especiais. Desenvolvido com amor e tecnologia de ponta por <strong>Marcos de Azevedo</strong>, nosso app oferece suporte completo para comunicação, prevenção de crises, rotina visual e muito mais.
+          <h2 className="text-2xl md:text-3xl font-bold mb-6">O que é o AtípicosApp?</h2>
+          <p className="text-base text-muted-foreground mb-8 leading-relaxed">
+            O <strong>AtípicosApp</strong> é mais do que um aplicativo — é uma ferramenta de transformação para famílias, cuidadores e pessoas com autismo, TDAH e outras necessidades especiais. Desenvolvido com amor e tecnologia de ponta, nosso app oferece suporte completo para comunicação, prevenção de crises, rotina visual e muito mais.
           </p>
-          <div className="grid sm:grid-cols-2 gap-4 text-sm text-left bg-muted/50 rounded-lg p-6">
-            <div>
-              <p className="font-semibold">Desenvolvedor:</p>
-              <p className="text-muted-foreground">Marcos de Azevedo</p>
-            </div>
-            <div>
-              <p className="font-semibold">CNPJ:</p>
-              <p className="text-muted-foreground">63.603.066/0001-96</p>
-            </div>
-            <div>
-              <p className="font-semibold">E-mail:</p>
-              <p className="text-muted-foreground">atipicosapp@contato.com</p>
-            </div>
-            <div>
-              <p className="font-semibold">Domínio Oficial:</p>
-              <p className="text-muted-foreground">atipicosapp.com</p>
-            </div>
-            <div className="sm:col-span-2">
-              <p className="font-semibold">Endereço:</p>
-              <p className="text-muted-foreground">Rua Águas Marinhas, 86 — Jardim Ipanema — São Bernardo do Campo — SP — CEP 09841-450</p>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -217,8 +200,8 @@ const LandingPage = () => {
       <section id="funcionalidades" className="py-16 px-4 bg-muted/30">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Funcionalidades Principais</h2>
-            <p className="text-lg text-muted-foreground">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Funcionalidades Principais</h2>
+            <p className="text-base text-muted-foreground">
               Tudo que você precisa em um único aplicativo
             </p>
           </div>
@@ -375,8 +358,8 @@ const LandingPage = () => {
       <section id="beneficios" className="py-16 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Benefícios Concretos</h2>
-            <p className="text-lg text-muted-foreground">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Benefícios Concretos</h2>
+            <p className="text-base text-muted-foreground">
               Resultados reais que transformam vidas
             </p>
           </div>
@@ -449,11 +432,11 @@ const LandingPage = () => {
       <section className="py-16 px-4 bg-gradient-to-r from-[hsl(var(--blue-medium))] to-[hsl(var(--magenta))] text-white">
         <div className="container mx-auto max-w-6xl text-center">
           <Award className="h-16 w-16 mx-auto mb-6" />
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Assine e Concorra a Prêmios Incríveis!
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+            Assine e Ganhe Instantaneamente Smartwatch e Tablet!
           </h2>
-          <p className="text-xl mb-12 text-white/90">
-            Todos os assinantes participam automaticamente do sorteio mensal
+          <p className="text-lg mb-12 text-white/90">
+            Ao assinar nossos planos, você recebe automaticamente seus brindes
           </p>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -485,8 +468,8 @@ const LandingPage = () => {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <Shield className="h-16 w-16 mx-auto mb-4 text-[hsl(var(--purple))]" />
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">100% Acessível</h2>
-            <p className="text-lg text-muted-foreground">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">100% Acessível</h2>
+            <p className="text-base text-muted-foreground">
               Desenvolvido seguindo as melhores práticas de acessibilidade
             </p>
           </div>
@@ -583,8 +566,8 @@ const LandingPage = () => {
       <section id="depoimentos" className="py-16 px-4 bg-muted/30">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">O Que Dizem Nossos Usuários</h2>
-            <p className="text-lg text-muted-foreground">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">O Que Dizem Nossos Usuários</h2>
+            <p className="text-base text-muted-foreground">
               Histórias reais de transformação
             </p>
           </div>
@@ -735,8 +718,8 @@ const LandingPage = () => {
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Perguntas Frequentes</h2>
-            <p className="text-lg text-muted-foreground">
+            <h2 className="text-2xl md:text-3xl font-bold mb-4">Perguntas Frequentes</h2>
+            <p className="text-base text-muted-foreground">
               Tire suas dúvidas sobre o AtípicosApp
             </p>
           </div>
@@ -790,19 +773,19 @@ const LandingPage = () => {
       {/* CTA Final */}
       <section className="py-20 px-4 bg-gradient-to-r from-[hsl(var(--blue-medium))] via-[hsl(var(--purple))] to-[hsl(var(--magenta))] text-white">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold mb-6">
             Pronto para transformar a rotina e comunicação da sua família?
           </h2>
-          <p className="text-xl mb-10 text-white/90">
+          <p className="text-lg mb-10 text-white/90">
             Junte-se a milhares de famílias que já descobriram o poder do AtípicosApp
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button onClick={handleDownload} size="lg" className="bg-white text-[hsl(var(--purple))] hover:bg-white/90 text-xl px-12 py-8">
-              <Download className="mr-2 h-6 w-6" />
+            <Button onClick={handleDownload} className="bg-white text-[hsl(var(--purple))] hover:bg-white/90 px-8 py-6">
+              <Download className="mr-2 h-5 w-5" />
               BAIXAR AGORA
             </Button>
-            <Button onClick={handleDownload} size="lg" variant="outline" className="bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white/20 text-xl px-12 py-8">
+            <Button onClick={handleDownload} variant="outline" className="bg-white/10 backdrop-blur-sm border-white text-white hover:bg-white/20 px-8 py-6">
               Teste Grátis 3 Dias
             </Button>
           </div>
