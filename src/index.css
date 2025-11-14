@@ -8,56 +8,54 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Roxo claro como fundo principal */
-    --background: 280 30% 92%;
-    --foreground: 220 90% 20%;
+    /* Fundo roxo/lilás claro (igual ao site) */
+    --background: 260 60% 85%;
+    --foreground: 230 70% 25%;
 
-    /* Cards com roxo mais claro */
-    --card: 280 25% 95%;
-    --card-foreground: 220 90% 20%;
+    /* Cards brancos/azul claro (igual ao site) */
+    --card: 220 40% 96%;
+    --card-foreground: 230 70% 25%;
 
-    --popover: 280 25% 95%;
-    --popover-foreground: 220 90% 20%;
+    --popover: 220 40% 96%;
+    --popover-foreground: 230 70% 25%;
 
-    /* Azul escuro como primary */
-    --primary: 220 90% 40%;
+    /* Azul médio para botões (igual ao site) */
+    --primary: 220 70% 50%;
     --primary-foreground: 0 0% 100%;
 
-    /* Azul claro como secondary */
-    --secondary: 210 80% 75%;
-    --secondary-foreground: 220 90% 20%;
+    /* Azul claro para secondary */
+    --secondary: 220 50% 80%;
+    --secondary-foreground: 230 70% 25%;
 
-    --muted: 280 20% 85%;
-    --muted-foreground: 220 40% 50%;
+    --muted: 260 30% 90%;
+    --muted-foreground: 230 40% 50%;
 
     /* Azul claro para accent */
-    --accent: 210 80% 75%;
-    --accent-foreground: 220 90% 20%;
+    --accent: 220 50% 80%;
+    --accent-foreground: 230 70% 25%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Bordas em azul claro */
-    --border: 210 60% 80%;
-    --input: 280 25% 95%;
-    --ring: 220 90% 40%;
+    /* Bordas azuis suaves */
+    --border: 220 40% 70%;
+    --input: 220 40% 96%;
+    --ring: 220 70% 50%;
 
     --radius: 0.75rem;
 
-    /* Cores para degradê da tela de cadastro - mais suave e claro */
-    --gradient-purple-light: 270 45% 75%;
-    --gradient-purple-medium: 260 50% 65%;
-    --gradient-blue-light: 200 60% 80%;
-    --gradient-blue-medium: 210 55% 70%;
-    --gradient-blue-soft: 220 50% 75%;
+    /* Cores do gradiente (igual ao site atipicosapp.com) */
+    --gradient-purple-top: 270 60% 75%;
+    --gradient-purple-mid: 260 50% 80%;
+    --gradient-blue-mid: 220 60% 85%;
+    --gradient-blue-bottom: 200 70% 88%;
 
-    /* Degradê vertical para tela de cadastro - mais suave */
+    /* Degradê vertical (igual ao site) */
     --welcome-gradient: linear-gradient(180deg, 
-      hsl(var(--gradient-purple-medium)) 0%,
-      hsl(var(--gradient-purple-light)) 30%,
-      hsl(var(--gradient-blue-soft)) 60%,
-      hsl(var(--gradient-blue-medium)) 80%,
-      hsl(var(--gradient-blue-light)) 100%);
+      hsl(var(--gradient-purple-top)) 0%,
+      hsl(var(--gradient-purple-mid)) 30%,
+      hsl(var(--gradient-blue-mid)) 70%,
+      hsl(var(--gradient-blue-bottom)) 100%);
 
     /* Cores do degradê AtípicosApp (da logo) */
     --blue-light: 200 100% 65%;
