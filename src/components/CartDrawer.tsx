@@ -41,7 +41,7 @@ export const CartDrawer = () => {
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        <Button className="relative bg-purple-600/70 hover:bg-purple-600 text-white p-2 sm:p-3 rounded-lg border border-purple-400/50">
+        <Button className="relative bg-primary hover:bg-primary/90 text-primary-foreground p-2 sm:p-3 rounded-lg">
           <ShoppingCart className="h-5 w-5" />
           {totalItems > 0 && (
             <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-pink-500">
@@ -51,10 +51,10 @@ export const CartDrawer = () => {
         </Button>
       </SheetTrigger>
       
-      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full bg-gradient-to-br from-blue-200 via-purple-200 to-indigo-200">
+      <SheetContent className="w-full sm:max-w-lg flex flex-col h-full bg-background">
         <SheetHeader className="flex-shrink-0">
-          <SheetTitle className="text-blue-800">Carrinho de Compras 🛒</SheetTitle>
-          <SheetDescription className="text-purple-700">
+          <SheetTitle className="text-foreground">Carrinho de Compras 🛒</SheetTitle>
+          <SheetDescription className="text-muted-foreground">
             {totalItems === 0 ? "Seu carrinho está vazio" : `${totalItems} ${totalItems !== 1 ? 'itens' : 'item'} no carrinho`}
           </SheetDescription>
         </SheetHeader>
@@ -63,8 +63,8 @@ export const CartDrawer = () => {
           {items.length === 0 ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
-                <ShoppingCart className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <p className="text-gray-600">Seu carrinho está vazio</p>
+                <ShoppingCart className="h-12 w-12 text-primary mx-auto mb-4" />
+                <p className="text-muted-foreground">Seu carrinho está vazio</p>
               </div>
             </div>
           ) : (
@@ -73,8 +73,8 @@ export const CartDrawer = () => {
               <div className="flex-1 overflow-y-auto pr-2 min-h-0">
                 <div className="space-y-4">
                   {items.map((item) => (
-                    <div key={item.variantId} className="flex gap-4 p-3 bg-white/70 rounded-lg border border-blue-300">
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-md overflow-hidden flex-shrink-0">
+                    <div key={item.variantId} className="flex gap-4 p-3 bg-card rounded-lg border border-border">
+                      <div className="w-16 h-16 bg-muted rounded-md overflow-hidden flex-shrink-0">
                         {item.product.node.images?.edges?.[0]?.node && (
                           <img
                             src={item.product.node.images.edges[0].node.url}
@@ -85,11 +85,11 @@ export const CartDrawer = () => {
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-medium truncate text-gray-800">{item.product.node.title}</h4>
-                        <p className="text-sm text-gray-600">
+                        <h4 className="font-medium truncate text-card-foreground">{item.product.node.title}</h4>
+                        <p className="text-sm text-muted-foreground">
                           {item.selectedOptions.map(option => option.value).join(' • ')}
                         </p>
-                        <p className="font-semibold text-blue-700">
+                        <p className="font-semibold text-foreground">
                           {item.price.currencyCode === 'USD' ? '$' : 'R$'} {parseFloat(item.price.amount).toFixed(2)}
                         </p>
                       </div>
@@ -108,7 +108,7 @@ export const CartDrawer = () => {
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-6 w-6 border-blue-300"
+                            className="h-6 w-6 border-border"
                             onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
                           >
                             <Minus className="h-3 w-3" />
@@ -117,7 +117,7 @@ export const CartDrawer = () => {
                           <Button
                             variant="outline"
                             size="icon"
-                            className="h-6 w-6 border-blue-300"
+                            className="h-6 w-6 border-border"
                             onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
                           >
                             <Plus className="h-3 w-3" />
@@ -130,17 +130,17 @@ export const CartDrawer = () => {
               </div>
               
               {/* Fixed checkout section */}
-              <div className="flex-shrink-0 space-y-4 pt-4 border-t border-blue-300 bg-white/50 rounded-t-lg p-4 mt-4">
+              <div className="flex-shrink-0 space-y-4 pt-4 border-t border-border bg-card rounded-t-lg p-4 mt-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold text-gray-800">Total</span>
-                  <span className="text-xl font-bold text-blue-700">
+                  <span className="text-lg font-semibold text-card-foreground">Total</span>
+                  <span className="text-xl font-bold text-foreground">
                     {items[0]?.price.currencyCode === 'USD' ? '$' : 'R$'} {totalPrice.toFixed(2)}
                   </span>
                 </div>
                 
                 <Button 
                   onClick={handleCheckout}
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white" 
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" 
                   size="lg"
                   disabled={items.length === 0 || isLoading}
                 >
