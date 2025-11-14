@@ -439,7 +439,7 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
           </Card>
 
           {/* Plano Premium */}
-          <Card className="bg-gradient-to-br from-purple-900 to-blue-900 border-2 border-purple-500 hover:border-purple-400 transition-all duration-200 relative overflow-hidden">
+          <Card className="border-2 border-primary hover:border-primary/80 transition-all duration-200 relative overflow-hidden" style={{background: 'var(--welcome-gradient)'}}>
             {/* Badge de Destaque */}
             <div className="absolute top-0 right-0 bg-gradient-to-l from-yellow-500 to-orange-500 text-black px-3 sm:px-4 lg:px-6 py-1 sm:py-2 text-xs sm:text-sm font-bold">
               {t('plans.totalAutonomy')}
@@ -447,29 +447,29 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
             
             <div className="p-4 sm:p-6 lg:p-8">
               <div className="text-center mb-4 sm:mb-6">
-                <Crown size={48} className="text-purple-300 mx-auto mb-2 sm:mb-4 w-8 h-8 sm:w-12 sm:h-12" />
-                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-300 mb-1 sm:mb-2">
+                <Crown size={48} className="text-foreground mx-auto mb-2 sm:mb-4 w-8 h-8 sm:w-12 sm:h-12" />
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground mb-1 sm:mb-2">
                   🌟 {t('plans.premiumTitle')}
                 </h2>
-                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1 sm:mb-2">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-1 sm:mb-2">
                   {t('plans.premiumPrice')}
                 </div>
-                <p className="text-sm text-purple-200">{t('plans.premiumAnnual')}</p>
-                <p className="text-sm sm:text-base lg:text-lg text-gray-300">{t('plans.perMonth')}</p>
-                <p className="text-xs sm:text-sm text-purple-200 mt-1 sm:mt-2">
+                <p className="text-sm text-foreground/80">{t('plans.premiumAnnual')}</p>
+                <p className="text-sm sm:text-base lg:text-lg text-foreground/70">{t('plans.perMonth')}</p>
+                <p className="text-xs sm:text-sm text-foreground/80 mt-1 sm:mt-2">
                   {t('plans.premiumDesc')}
                 </p>
               </div>
 
               <div className="mb-4 sm:mb-6">
-                <h3 className="text-base sm:text-lg font-semibold text-white mb-2 sm:mb-4">
+                <h3 className="text-base sm:text-lg font-semibold text-foreground mb-2 sm:mb-4">
                   {t('plans.premiumFeatures')}
                 </h3>
                 <ul className="space-y-1 sm:space-y-2">
                   {premiumFeatures.map((feature, index) => (
                     <li key={index} className="flex items-start">
-                      <CheckCircle size={16} className="text-purple-400 mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
-                      <span className="text-xs sm:text-sm lg:text-base text-gray-300">{feature}</span>
+                      <CheckCircle size={16} className="text-primary mr-2 sm:mr-3 mt-1 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="text-xs sm:text-sm lg:text-base text-foreground/90">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -480,7 +480,7 @@ const PlansScreen = ({ onNavigate, voiceSpeed }: PlansScreenProps) => {
                 onClick={() => handleCheckout(PLANS.premium.priceId)}
                 disabled={loading || hasActiveSubscription}
                 onMouseEnter={() => speak('Plano Premium Mensal')}
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white py-3 sm:py-4 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-bold border-2 border-purple-400 shadow-lg disabled:opacity-50"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-3 sm:py-4 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-bold shadow-lg disabled:opacity-50"
               >
                 {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
                 {hasActiveSubscription ? 'Plano Ativo' : 'Assinar Mensal - R$ 67,00'}

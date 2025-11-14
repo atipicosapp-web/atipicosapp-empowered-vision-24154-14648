@@ -86,25 +86,25 @@ const ShopScreen = ({ onNavigate, textSize, voiceSpeed }: ShopScreenProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-indigo-200 text-gray-800">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="p-4 sm:p-6 lg:p-8 border-b border-blue-300/50">
+      <header className="p-4 sm:p-6 lg:p-8 border-b border-border">
         <div className="flex justify-between items-center mb-3">
           <Button
             onClick={() => {
               speak(t('shop.back'));
               onNavigate('home');
             }}
-            className="bg-purple-600/70 hover:bg-purple-600 text-white p-2 sm:p-3 rounded-lg border border-purple-400/50"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground p-2 sm:p-3 rounded-lg"
           >
             <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </Button>
-          <h1 className={`${getTitleClass()} font-bold text-blue-800 flex-1 text-center`}>
+          <h1 className={`${getTitleClass()} font-bold text-foreground flex-1 text-center`}>
             🛒 {t('shop.title')}
           </h1>
           <CartDrawer />
         </div>
-        <p className={`${getTextClass()} text-purple-700 text-center`}>
+        <p className={`${getTextClass()} text-muted-foreground text-center`}>
           Produtos especiais para autistas e atípicos 💙
         </p>
       </header>
@@ -120,12 +120,12 @@ const ShopScreen = ({ onNavigate, textSize, voiceSpeed }: ShopScreenProps) => {
           </div>
         ) : products.length === 0 ? (
           <div className="text-center py-12">
-            <Card className="max-w-md mx-auto p-8 bg-white/70 border-blue-300">
+            <Card className="max-w-md mx-auto p-8 bg-card border-border">
               <div className="text-4xl mb-4">🛍️</div>
-              <h2 className={`${getTitleClass()} text-blue-700 font-bold mb-4`}>
+              <h2 className={`${getTitleClass()} text-foreground font-bold mb-4`}>
                 {t('shop.noProducts')}
               </h2>
-              <p className={`${getTextClass()} text-gray-600`}>
+              <p className={`${getTextClass()} text-muted-foreground`}>
                 Em breve teremos produtos incríveis para você!
               </p>
             </Card>
@@ -143,9 +143,9 @@ const ShopScreen = ({ onNavigate, textSize, voiceSpeed }: ShopScreenProps) => {
                     speak(`Visualizando ${product.node.title}`);
                     onNavigate('product-detail', { product });
                   }}
-                  className="cursor-pointer transition-all duration-300 border bg-white/70 border-blue-300 hover:border-purple-400 hover:scale-105 overflow-hidden"
+                  className="cursor-pointer transition-all duration-300 border bg-card border-border hover:border-primary hover:scale-105 overflow-hidden"
                 >
-                  <div className="aspect-square overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100">
+                  <div className="aspect-square overflow-hidden bg-muted">
                     {image ? (
                       <img
                         src={image.url}
@@ -160,19 +160,19 @@ const ShopScreen = ({ onNavigate, textSize, voiceSpeed }: ShopScreenProps) => {
                   </div>
                   
                   <div className="p-4 space-y-3">
-                    <h3 className="text-lg font-bold text-gray-800 line-clamp-2">
+                    <h3 className="text-lg font-bold text-foreground line-clamp-2">
                       {product.node.title}
                     </h3>
                     
                     {product.node.description && (
-                      <p className="text-sm text-gray-600 line-clamp-2">
+                      <p className="text-sm text-muted-foreground line-clamp-2">
                         {product.node.description}
                       </p>
                     )}
                     
                     <div className="flex items-center justify-between pt-2">
                       <div>
-                        <p className="text-2xl font-bold text-blue-700">
+                        <p className="text-2xl font-bold text-foreground">
                           {product.node.priceRange.minVariantPrice.currencyCode === 'USD' ? '$' : 'R$'}
                           {parseFloat(product.node.priceRange.minVariantPrice.amount).toFixed(2)}
                         </p>
@@ -184,7 +184,7 @@ const ShopScreen = ({ onNavigate, textSize, voiceSpeed }: ShopScreenProps) => {
                           handleAddToCart(product);
                         }}
                         disabled={!variant?.availableForSale}
-                        className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
                       >
                         <ShoppingCart className="w-4 h-4 mr-2" />
                         {t('shop.addToCart')}
