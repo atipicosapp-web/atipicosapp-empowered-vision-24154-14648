@@ -24,7 +24,7 @@ jobs:
 
       - name: Install Android SDK components
         run: |
-          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Setup Node.js 18
         uses: actions/setup-node@v4
@@ -47,32 +47,30 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
-      - name: Build Android Release APK
+      - name: Build Android Debug APK
         working-directory: android
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Sign APK with apksigner (v2)
-        working-directory: android/app/build/outputs/apk/release
-        env:
-          BUILD_TOOLS: ${{ env.ANDROID_SDK_ROOT }}/build-tools/35.0.0
+      - name: Rename APK
         run: |
-          # Create a temporary keystore for signing
-          keytool -genkey -v -keystore release.keystore -alias atipicos -keyalg RSA -keysize 2048 -validity 10000 -storepass atipicos123 -keypass atipicos123 -dname "CN=AtipicosApp, OU=Development, O=Atipicos, L=Brazil, ST=BR, C=BR"
-          
-          # Sign the APK using apksigner (Scheme v2)
-          "$BUILD_TOOLS/apksigner" sign --ks release.keystore --ks-pass pass:atipicos123 --key-pass pass:atipicos123 --out atipicos.apk app-release-unsigned.apk
+          cp android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/atipicos.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: atipicos-apk
-          path: android/app/build/outputs/apk/release/atipicos.apk
+          path: android/app/build/outputs/apk/debug/atipicos.apk
           retention-days: 30
 
-      - name: Commit APK to public/ and push back
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+      - name: Copy APK to public folder
         run: |
-          cp android/app/build/outputs/apk/release/atipicos.apk public/atipicos.apk
+          mkdir -p public
+          cp android/app/build/outputs/apk/debug/atipicos.apk public/atipicos.apk
+          
+      - name: Commit and push APK
+        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
+          git add public/atipicos.apk
+          git commit -m "Update APK [skip ci]" || echo "No changes"
+          git push
