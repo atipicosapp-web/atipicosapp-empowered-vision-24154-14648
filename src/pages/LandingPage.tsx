@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -35,15 +35,11 @@ import logo from '@/assets/logo-atipicos.jpg';
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleDownload = () => {
-    // Criar um link temporário para download do APK
-    const link = document.createElement('a');
-    link.href = '/atipicos.apk'; // Será o arquivo APK na pasta public
-    link.download = 'Atipicos.apk';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Redirecionar para a tela de login do aplicativo
+    navigate('/app');
   };
 
   const scrollToSection = (id: string) => {
