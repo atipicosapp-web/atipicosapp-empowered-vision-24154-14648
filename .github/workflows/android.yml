@@ -75,6 +75,4 @@ jobs:
           cp android/app/build/outputs/apk/release/atipicos.apk public/atipicos.apk
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/atipicos.apk
-          git commit -m "chore: add latest atipicos.apk [skip ci]" || echo "No changes to commit"
-          git push
+          
